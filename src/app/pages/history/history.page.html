@@ -1,0 +1,14 @@
+<ion-header #header class="ion-no-border fixed" style="background-color: #fff;">
+  <ion-toolbar class="ion-padding">
+    <ion-title *ngIf="!searchEnable" class="ion-no-padding">Histories</ion-title>
+    <ion-icon *ngIf="!searchEnable" slot="end" class="search-btn" name="search" (click)="toggleSearch()"></ion-icon>
+    <ion-searchbar #searchBar *ngIf="searchEnable" [(ngModel)]="searchValue" [debounce]="250"></ion-searchbar>
+    <ion-icon *ngIf="searchEnable" slot="end" class="close-btn" name="close" (click)="toggleSearch()"></ion-icon>
+  </ion-toolbar>
+  <ion-segment scrollable="true"
+    (ionChange)="segmentChanged($event)">
+    <ion-segment-button *ngFor="let menu of menus" value="{{menu}}" (click)="scrollIntoView($event)">
+      <ion-label>{{menu}}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>

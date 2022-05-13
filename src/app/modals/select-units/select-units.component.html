@@ -1,0 +1,37 @@
+<ion-header #header class="ion-no-border fixed" style="background-color: #fff;">
+  <ion-toolbar class="ion-padding">
+    <ion-icon slot="start" class="back-btn" name="chevron-back-outline" (click)="back()"></ion-icon>
+    <ion-title *ngIf="!searchEnable" class="ion-no-padding">Units</ion-title>
+    <ion-icon *ngIf="!searchEnable" slot="end" class="search-btn" name="search" (click)="toggleSearch()"></ion-icon>
+    <ion-searchbar #searchBar *ngIf="searchEnable" [(ngModel)]="searchValue" [debounce]="250"></ion-searchbar>
+    <ion-icon *ngIf="searchEnable" slot="end" class="close-btn" name="close" (click)="toggleSearch()"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #content [scrollEvents]="true" (ionScrollStart)="scrollStart()" (ionScroll)="scrolling($event)"
+  (ionScrollEnd)="scrollEnd()">
+  <div style="height: 55px;" name="abc"></div>
+  <ion-list class="ion-padding">
+    <ion-list-header class="ion-no-padding">
+      <div style="width: 100%; display: flex; justify-content: space-between;">
+        <h4>Count</h4>
+        <h5>{{ filteredUnits.length }}</h5>
+      </div>
+    </ion-list-header>
+    <ion-item-sliding class="unit-card" *ngFor="let unit of filteredUnits">
+      <ion-item lines="none" class="ion-no-padding" (click)="select(unit)">
+        <div class="icon icon-success me" [attr.name]="unit.symbol"></div>
+        <ion-label class="ion-no-margin">
+          <h2>{{ unit.name }}</h2>
+        </ion-label>
+        <ion-label class="label_unit" slot="end">{{ unit.symbol }}</ion-label>
+      </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+  <div style="height: 55px"></div>
+  <ion-fab #addBtn vertical="bottom" horizontal="end" slot="fixed" (click)="openCreateUnitPage()">
+    <ion-fab-button color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,40 @@
+<ion-header #header class="ion-no-border fixed" style="background-color: #f8f8fb;--background-url: {{ url(category?.img) }}">
+  <ion-toolbar class="ion-padding">
+    <ion-icon slot="start" class="back-btn" name="chevron-back-outline" (click)="back()"></ion-icon>
+    <ion-title class="ion-no-padding">{{ category?.name }}</ion-title>
+    <ion-icon slot="end" class="search-btn" name="camera"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #content [scrollEvents]="true" (ionScrollStart)="scrollStart()" (ionScroll)="scrolling($event)"
+  (ionScrollEnd)="scrollEnd()">
+
+  <div style="height: 35vh;"></div>
+
+  <ion-item lines="none">
+    <ion-label class="input-label" position="stacked">Category's Name</ion-label>
+    <ion-input class="radius mt" [(ngModel)]="category.name"></ion-input>
+  </ion-item>
+
+  <div class="list-wrapper mt">
+    <div class="list-title ion-padding">
+      <h5 class="ion-no-padding ion-no-margin">Items</h5>
+      <h5 class="ion-no-padding ion-no-margin">{{category.item_count}}</h5>
+    </div>
+    <ul class="ion-no-padding ion-no-margin">
+      <li *ngFor="let product of category.products">
+        <ion-card class="ion-no-padding ion-no-margin">
+          <img width="100%" height="115px" src="{{product.img}}">
+          <ion-card-header class="ion-no-padding">
+            <ion-card-title class="ion-no-padding">{{ product.name }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </li>
+    </ul>
+  </div>
+
+  <div slot="fixed" style="bottom: 0; width: 100%; padding: 16px 16px; background: #fff">
+    <ion-button disabled="{{!isModified}}" style="height:60px; --border-radius: 16px" class="add_to_cart_btn" shape="round" expand="full"
+      color="success" (click)="updateCategory()">Update</ion-button>
+  </div>
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "jcbstock",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,80 @@
+p {
+  font-family: Lato;
+}
+
+ion-header {
+  ion-toolbar {
+    padding: 0;
+    --ion-padding: 16px;
+
+    ion-searchbar {
+      --border-radius: 16px;
+    }
+
+    .back-btn,
+    .search-btn {
+      background-color: #d8f3f1;
+      padding: 0.5em;
+      font-size: medium;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #25d482;
+    }
+
+    .close-btn {
+      background-color: #f3d8f1;
+      padding: 0.5em;
+      font-size: medium;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #d42582;
+    }
+
+  }
+  ion-segment {
+    width: 100vw;
+  }
+}
+
+ion-content {
+
+  ion-list {
+    ion-item-sliding {
+      &.product-card {
+        // box-shadow: 0 0 5px 0 rgb(0 0 0 / 20%);
+        border-radius: 16px;
+        margin-top: 16px;
+        overflow: hidden;
+
+        ion-item {
+          border-radius: 16px;
+          --ion-item-background: #f8f8fb;
+
+          ion-thumbnail {
+            position: relative;
+            left: -20px;
+            margin: 0;
+            width: 84px;
+            height: 84px;
+            background-color: #e1e1df;
+            border-radius: 16px;
+            overflow: hidden;
+          }
+
+          .label_unit {
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            color: #fff;
+            background: #5ce1cd;
+            padding: 0.4em;
+            border-radius: 16px 0;
+            width: 6em;
+            text-align: center;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+  }
+}

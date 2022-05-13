@@ -1,0 +1,60 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { IonModal, NavController } from '@ionic/angular';
+import Category from 'src/app/models/category';
+import { ModelService } from 'src/app/services/model.service';
+
+@Component({
+  selector: 'app-update-category',
+  templateUrl: './update-category.component.html',
+  styleUrls: ['./update-category.component.scss'],
+})
+export class UpdateCategoryComponent implements OnInit {
+  @ViewChild('updateCategory', { read: ElementRef }) updateCategoryBtn: ElementRef;
+
+  prev: Category
+  category: Category
+  modal: IonModal
+
+  constructor(
+    private navCtrl: NavController,
+  ) {
+  }
+
+  ngOnInit() {
+    this.category = new Category
+    this.loadData()
+  }
+
+  async loadData() {
+    const { result } = await ModelService.getSessionData('update-category-page')
+    if (result) {
+      this.category = new Category(result)
+      //this.category.load_products
+      this.prev = JSON.parse(JSON.stringify(this.category))
+    }
+  }
+
+  get isModified() {
+    return JSON.stringify(this.category) !== JSON.stringify(this.prev)
+  }
+
+  async updateCategory() {
+    await ModelService.update({ name: Category.key, object: this.category })
+    this.modal.dismiss(this.category)
+  }
+
+  logScrollStart() { }
+
+  logScrolling(e: any) { }
+
+  logScrollEnd() { }
+
+  back() {
+    this.modal.dismiss()
+  }
+
+  url(url: string) {
+    return `url(${url})`
+  }
+}
+

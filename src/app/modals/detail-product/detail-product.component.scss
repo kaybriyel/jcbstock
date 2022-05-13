@@ -1,0 +1,120 @@
+p {
+  font-family: Lato;
+}
+
+ion-header {
+  background-color: #fff;
+  background-image: url(/assets/pics/product.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 30vh;
+  background-position: center;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 2px 40px 0 #004b28;
+
+  ion-toolbar {
+    --background: transparent;
+    padding: 0;
+    --ion-padding: 16px;
+
+    ion-searchbar {
+      --border-radius: 16px;
+    }
+
+    ion-title {
+      margin-left: 16px;
+    }
+
+    .back-btn,
+    .search-btn {
+      background-color: #d8f3f1;
+      padding: 0.5em;
+      font-size: medium;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #25d482;
+    }
+
+    .close-btn {
+      background-color: #f3d8f1;
+      padding: 0.5em;
+      font-size: medium;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #d42582;
+    }
+  }
+
+  .product-qty-wrapper {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    bottom: 16px;
+    padding-right: var(--ion-padding, 16px);
+
+    .qty-value {
+      background-color: #d8f3f1;
+      border-radius: 0 16px;
+      padding: 0.2em .3em;
+      line-height: 1.2;
+      min-width: 4em;
+      text-align: center;
+    }
+
+    .last-update {
+      color: #ccc;
+      background-color: #fffffbeb;
+      border-radius: 16px 0;
+      padding: .3em;
+      min-width: 5em;
+      min-height: 1.3em;
+      text-align: center;
+    }
+  }
+}
+
+ion-content {
+
+  ion-button.add_to_cart_btn {
+    --box-shadow: 0 5px 8px 1px #2dd36f7a;
+  }
+
+  .input-label {
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  ion-textarea {
+    background-color: #f8f8fb;
+  }
+
+  ion-input {
+    background-color: #f8f8fb;
+    --padding-start: 16px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    --padding-end: 16px;
+  }
+
+  .mt-15 {
+    margin-top: 15px;
+  }
+
+  .radius {
+    border-radius: 16px;
+  }
+
+  .add-to-cart-wrapper {
+    .cart-qty {
+      position: absolute;
+      border-radius: 16px;
+      background-color: #497c4940;
+      right: -14px;
+      padding: 1em;
+      width: 5em;
+    }
+  }
+}
