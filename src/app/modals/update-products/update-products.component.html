@@ -54,15 +54,34 @@
       placeholder="Enter any notes here..." [(ngModel)]="product.description"></ion-textarea>
   </ion-item>
 
-  <ion-item lines="none" class="mt">
-    <ion-label class="input-label" position="stacked">Supplier's Number</ion-label>
-    <ion-input class="radius mt" (ionFocus)="selectSupplier()" value="{{product.supplier.phone}}"></ion-input>
-  </ion-item>
-
-  <ion-item lines="none" class="mt">
-    <ion-label class="input-label" position="stacked">Supplier's Name</ion-label>
-    <ion-input class="radius mt" (ionFocus)="selectSupplier()"  value="{{product.supplier.name}}"></ion-input>
-  </ion-item>
+  <div class="list-wrapper mt">
+    <div class="list-title ion-padding">
+      <h5 class="ion-no-padding ion-no-margin">Suppliers</h5>
+      <h5 class="ion-no-padding ion-no-margin">{{ product.suppliers.length }}</h5>
+    </div>
+    <ul class="ion-no-padding ion-no-margin">
+      <li *ngFor="let ps of product.suppliers">
+        <ion-card class="ion-no-padding ion-no-margin" (click)="updatePrice(ps)">
+          <img width="100%" height="115px" src="{{ps.supplier.img || 'assets/pics/product.png'}}">
+          <ion-card-header class="ion-no-padding">
+            <ion-card-title class="ion-no-padding">{{ ps.supplier.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            {{ ps.formattedPrice }}
+          </ion-card-content>
+        </ion-card>
+      </li>
+      <li>
+        <ion-card class="ion-no-padding ion-no-margin" (click)="selectSupplier()">
+          <img width="100%" height="115px" src="assets/pics/product.png">
+          <ion-card-header class="ion-no-padding">
+            <ion-card-title class="ion-no-padding">ADD</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>Supplier</ion-card-content>
+        </ion-card>
+      </li>
+    </ul>
+  </div>
 
   <div style="height: 100px;"></div>
   <div #updateProductBtn slot="fixed" style="bottom: 0; width: 100%; padding: 16px 16px; background: #fff">

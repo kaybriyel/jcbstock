@@ -53,7 +53,6 @@ export class ProductsPage implements OnInit {
     if (!cat) return
     this.category = cat
     await this.category.load_products
-    this.category.products.forEach(p => p.load_supplier)
   }
 
   async presentModal(opt: ModalOptions) {

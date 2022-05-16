@@ -1,12 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Platform, ModalController, IonModal, ModalOptions } from '@ionic/angular';
-import Category from 'src/app/models/category';
 import Product from 'src/app/models/product';
-import Supplier from 'src/app/models/supplier';
 import Unit from 'src/app/models/unit';
-import { ModelService } from 'src/app/services/model.service';
 import { SelectCategoriesComponent } from '../select-categories/select-categories.component';
-import { SelectSuppliersComponent } from '../select-suppliers/select-suppliers.component';
 import { SelectUnitsComponent } from '../select-units/select-units.component';
 
 @Component({
@@ -31,7 +27,6 @@ export class CreateProductComponent implements OnInit {
 
   ngOnInit() {
     this.product = new Product
-    this.product.setSupplier(new Supplier)
     this.product.setUnit(Unit.default())
   }
 
@@ -61,17 +56,14 @@ export class CreateProductComponent implements OnInit {
     if(this.htmlModal && this.htmlModal.isConnected) return {}
     this.htmlModal = await this.modalCtrl.create(opt)
     this.htmlModal.present()
-    return this.htmlModal.onWillDismiss()
+    const res = await this.htmlModal.onWillDismiss()
+    await this.htmlModal.onDidDismiss()
+    return res
   }
 
   async selectUnit() {
     const { data } = await this.presentModal({ component: SelectUnitsComponent })
     if (data) this.product.setUnit(data)
-  }
-
-  async selectSupplier() {
-    const {data} = await this.presentModal({ component: SelectSuppliersComponent })
-    if (data) this.product.setSupplier(data)
   }
 
   
@@ -81,9 +73,6 @@ export class CreateProductComponent implements OnInit {
   }
 
   async createProduct() {
-    if (this.product.supplier_id === undefined && this.product.supplier.name)
-      this.product.setSupplier(await Supplier.createSupplier(this.product.supplier))
-
     this.product = await Product.createProduct(this.product)
 
     if (this.product.is_valid)
@@ -97,5 +86,7 @@ export class CreateProductComponent implements OnInit {
   get isOk() {
     return (this.product.name && !isNaN(this.product.category_id))
   }
+
+
 }
 

@@ -90,12 +90,62 @@ ion-content {
     background-color: #f8f8fb;
   }
 
-  ion-input, ion-select {
+  ion-input,
+  ion-select {
     background-color: #f8f8fb;
     --padding-start: 16px;
     --padding-top: 16px;
     --padding-bottom: 16px;
     --padding-end: 16px;
+  }
+
+  .list-wrapper {
+    .list-title {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: scroll;
+      height: 208px;
+
+      li {
+        display: block;
+        height: 200px;
+        flex: 0 auto;
+        margin: 4px;
+        padding: 4px;
+
+        ion-card {
+          width: 120px;
+          height: 100%;
+          border-radius: 16px;
+          box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+          background-color: #F8F8FB;
+
+          ion-card-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 35px;
+
+            ion-card-title {
+              font-size: 16px;
+              padding: 0 8px;
+              text-align: center;
+            }
+          }
+
+          ion-card-content {
+            height: 35px;
+            text-align: center;
+          }
+        }
+
+      }
+    }
   }
 
   .mt {

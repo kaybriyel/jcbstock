@@ -5,6 +5,8 @@ import Product from "../models/product"
 import ProductNotification from "./product-notification"
 import Supplier from "../models/supplier"
 import Unit from "../models/unit"
+import Currency from "../models/currency"
+import ProductSupplier from "../models/product-supplier"
 
 
 export interface ITimestamp {
@@ -17,13 +19,13 @@ export interface ITimestamp {
 export interface ICategory {
   id: number
   name: string
-  item_count: number
   img?: string
   timestamp: ITimestamp
-  products?: Product[]
 }
 
 export interface ICategoryLoader {
+  item_count: number
+  products?: Product[]
   get load_products(): Promise<Product[]>
   get is_valid(): boolean
 }
@@ -32,11 +34,11 @@ export interface IUnit {
   id: number
   name: string
   symbol: string
-  conversions?: []
   timestamp?: ITimestamp
 }
 
 export interface IUnitLoader {
+  conversions?: []
   get is_valid(): boolean
 }
 
@@ -45,45 +47,61 @@ export interface IProduct {
   name: string
   qty: number
   unit_id: number
-  category_id?: number
-  supplier_id?: number
+  category_id: number
   img?: string
   description?: string
   notification?: ProductNotification
   timestamp: ITimestamp
-  unit?: Unit
-  supplier?: Supplier
-  category?: Category
 }
 
 export interface IProductLoader {
+  category?: Category
+  unit?: Unit
+  suppliers?: ProductSupplier[]
   get load_unit(): Promise<Unit>
+  get load_suppliers(): Promise<ProductSupplier[]>
   get load_category(): Promise<Category>
-  get load_supplier(): Promise<Supplier>
   get is_valid(): boolean
-
+  
   setUnit(u: Unit)
-  setSupplier(s: Supplier)
   setCategory(c: Category)
 }
 
 export interface IOrderItem {
   id: number
-  qty: number,
-  supplier_id: number
-  product_id: number
   order_note_id: number
-  product?: Product
-  supplier?: Supplier
-  order_note?: OrderNote
+  supplier_product_id: number
+  qty: number,
+  unit_price: number
   timestamp: ITimestamp
 }
 
 export interface IOrderItemLoader {
+  order_note?: OrderNote
   get load_supplier(): Promise<Supplier>
   get load_product(): Promise<Product>
   get load_order_note(): Promise<OrderNote>
   get is_valid(): boolean
+}
+
+export interface IProductSupplier {
+  id: number
+  supplier_id: number
+  product_id: number
+  currency_id: number
+  unit_price: number
+}
+
+export interface IProductSupplierLoader {
+  supplier?: Supplier
+  currency?: Currency
+  get load_supplier(): Promise<Supplier>
+  get load_product(): Promise<Product>
+  get load_currency(): Promise<Currency>
+  get formattedPrice(): string
+
+  setSupplier(s: Supplier)
+  setProduct(p: Product)
 }
 
 export interface IOrders {
@@ -100,12 +118,12 @@ export interface IOrderNote {
   date: string,
   status: string,
   item_count: number
-  supplier?: Supplier
-  items?: OrderItem[]
   timestamp: ITimestamp
 }
 
 export interface IOrderNoteLoader {
+  supplier?: Supplier
+  items?: OrderItem[]
   get load_supplier(): Promise<Supplier>
   get load_items(): Promise<OrderItem[]>
   get is_valid(): boolean
@@ -118,10 +136,22 @@ export interface ISupplier {
   phone: string
   product_count: number
   timestamp: ITimestamp
-  products?: Product[]
 }
 
 export interface ISupplierLoader {
+  products?: Product[]
   get load_products(): Promise<Product[]>
   get is_valid(): boolean
+}
+
+
+export interface ICurrency {
+  id: number
+  code: string
+  symbol: string
+  name: string
+}
+
+export interface ICurrencyLoader {
+  conversions?: []
 }

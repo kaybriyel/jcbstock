@@ -1,7 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonModal, Platform, ModalController, ModalOptions } from '@ionic/angular';
+import { InputPriceComponent } from 'src/app/alerts/input-price/input-price.component';
 import Category from 'src/app/models/category';
 import Product from 'src/app/models/product';
+import ProductSupplier from 'src/app/models/product-supplier';
 import Supplier from 'src/app/models/supplier';
 import Unit from 'src/app/models/unit';
 import { ModelService } from 'src/app/services/model.service';
@@ -33,7 +35,6 @@ export class UpdateProductsComponent implements OnInit {
 
   ngOnInit() {
     this.product = new Product
-    this.product.supplier = new Supplier
     this.product.unit = Unit.default()
     this.loadData()
   }
@@ -41,9 +42,8 @@ export class UpdateProductsComponent implements OnInit {
   async loadData() {
     const { result } = await ModelService.getSessionData('update-product-page')
     this.product = new Product(result)
-    this.product.load_supplier
-    this.product.load_unit
-    window['pro'] = this.product
+    await this.product.load_unit
+    await this.product.load_suppliers
     this.prev = JSON.parse(JSON.stringify(this.product))
   }
 
@@ -70,21 +70,17 @@ export class UpdateProductsComponent implements OnInit {
   }
 
   async presentModal(opt: ModalOptions) {
-    if(this.htmlModal && this.htmlModal.isConnected) return {}
+    if (this.htmlModal && this.htmlModal.isConnected) return {}
     this.htmlModal = await this.modalCtrl.create(opt)
     this.htmlModal.present()
-    return this.htmlModal.onWillDismiss()
+    const res = await this.htmlModal.onWillDismiss()
+    await this.htmlModal.onDidDismiss()
+    return res
   }
-  
+
   async selectUnit() {
-    const {data} = await this.presentModal({ component: SelectUnitsComponent })
+    const { data } = await this.presentModal({ component: SelectUnitsComponent })
     if (data) this.product.setUnit(data)
-  }
-
-  async selectSupplier() {
-    const {data} = await this.presentModal({ component: SelectSuppliersComponent })
-
-    if (data) this.product.setSupplier(data)
   }
 
   async updateProduct() {
@@ -93,8 +89,34 @@ export class UpdateProductsComponent implements OnInit {
   }
 
   async selectCategory() {
-    const {data} = await this.presentModal({ component: SelectCategoriesComponent })
+    const { data } = await this.presentModal({ component: SelectCategoriesComponent })
     if (data) this.product.setCategory(data)
+  }
+
+  async selectSupplier() {
+    const { data: supplier } = await this.presentModal({ component: SelectSuppliersComponent })
+    const ps = await this.inputPrice(supplier)
+    if (ps) this.product.suppliers.push(ps)
+  }
+
+  async updatePrice(ps: ProductSupplier) {
+    const data = await this.inputPrice(ps)
+    if (data) {
+      const fps = this.product.suppliers.find(({ id }) => id === ps.id)
+      if (fps) {
+        fps.currency_id = data.currency_id
+        fps.unit_price = data.unit_price
+        fps.load_currency
+      }
+    }
+  }
+
+  async inputPrice(ps: ProductSupplier) {
+    if (ps) {
+      ModelService.saveSessionData('input-price-page', { ...ps, product_id: this.product.id, currency_id: ps.currency_id || 0 })
+      const { data } = await this.presentModal({ component: InputPriceComponent })
+      return data
+    }
   }
 
   url(url: string) {

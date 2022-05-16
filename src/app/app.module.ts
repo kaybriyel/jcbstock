@@ -5,6 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { InputPriceComponent } from './alerts/input-price/input-price.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +31,7 @@ import { UpdateUnitsComponent } from './modals/update-units/update-units.compone
   declarations: [
     AppComponent,
     
+
     CreateCategoryComponent,
     CreateProductComponent,
     CreateUnitComponent,
@@ -37,6 +39,8 @@ import { UpdateUnitsComponent } from './modals/update-units/update-units.compone
     CreateOrderNoteComponent,
 
     DetailProductComponent,
+
+    InputPriceComponent,
 
     SelectCategoriesComponent,
     SelectProductsComponent,

@@ -1,0 +1,30 @@
+<ion-header #header class="ion-no-border fixed" style="background-color: #fff;">
+  <ion-toolbar class="ion-padding">
+    <ion-icon slot="start" class="back-btn" name="chevron-back-outline" (click)="back()"></ion-icon>
+    <ion-title class="ion-no-padding">Unit Price</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div style="height: 7vh"></div>
+  <ion-list>
+    <ion-item lines="none">
+      <ion-label class="input-label" position="stacked">Currency</ion-label>
+      <ion-select [(ngModel)]="productSupplier.currency_id" class="radius mt" interface="action-sheet" placeholder="Select currency">
+        <ion-select-option *ngFor="let cur of currencies" value="{{cur.id}}">{{ cur.code }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item lines="none" class="mt">
+      <ion-label class="input-label" position="stacked">Price</ion-label>
+      <ion-input type="number" class="radius mt" [(ngModel)]="productSupplier.unit_price"></ion-input>
+    </ion-item>
+  </ion-list>
+  
+  <div #okBtn slot="fixed" style="bottom: 0; width: 100%; padding: 16px 16px; background: #fff">
+    <ion-button disabled="{{!isOk}}" style="height:60px; --border-radius: 16px" class="ok_btn" shape="round"
+      expand="full" color="success" (click)="ok()">OK</ion-button>
+  </div>
+
+</ion-content>

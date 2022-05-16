@@ -44,15 +44,6 @@ export default class Category implements ICategory, ICategoryLoader {
     }
   }
 
-  static async createCategory(cat: ICategory): Promise<Category> {
-    return await ModelService.create({ name: Category.key, object: cat })
-  }
-
-  static async load(): Promise<Category[]> {
-    const { result } = await ModelService.getLocalData(Category.key)
-    return result ? result.map(c => new Category(c)) : []
-  }
-
   print() {
     console.log(this)
   }
@@ -63,6 +54,15 @@ export default class Category implements ICategory, ICategoryLoader {
     const { result } = await ModelService.getLocalData(Product.key)
     if (result) cat.products = result.map(r => new Product(r))
     return cat
+  }
+
+  static async createCategory(cat: ICategory): Promise<Category> {
+    return await ModelService.create({ name: Category.key, object: cat })
+  }
+
+  static async load(): Promise<Category[]> {
+    const { result } = await ModelService.getLocalData(Category.key)
+    return result ? result.map(c => new Category(c)) : []
   }
 
 }

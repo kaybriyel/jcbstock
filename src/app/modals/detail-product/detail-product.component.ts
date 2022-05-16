@@ -4,7 +4,6 @@ import Product from 'src/app/models/product';
 import Supplier from 'src/app/models/supplier';
 import Unit from 'src/app/models/unit';
 import { ModelService } from 'src/app/services/model.service';
-import { SelectSuppliersComponent } from '../select-suppliers/select-suppliers.component';
 
 @Component({
   selector: 'app-detail-product',
@@ -25,17 +24,15 @@ export class DetailProductComponent implements OnInit {
     this.platform.keyboardDidHide.subscribe(() => this.blur())
     this.product = new Product
     this.product.setUnit(Unit.default())
-    this.product.setSupplier(new Supplier)
     this.loadData()
   }
 
   async loadData() {
     const { result } = await ModelService.getSessionData('product-detail-page')
-    console.log('loading')
     if (result) {
-      console.log(this.product)
       this.product = new Product(result)
-      console.log(this.product)
+      this.product.load_suppliers
+      this.product.load_unit
     }
   }
 
@@ -54,11 +51,6 @@ export class DetailProductComponent implements OnInit {
     this.htmlModal = await this.modalCtrl.create(opt)
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
-  }
-
-  async selectSupplier() {
-    const { data } = await this.presentModal({ component: SelectSuppliersComponent })
-    if (data) console.log(data)
   }
 
   blur() {

@@ -1,25 +1,24 @@
 import { IProduct, IProductLoader, ITimestamp } from "../interfaces/model-interfaces";
 import { ModelService } from "../services/model.service";
-import category from "./category";
 import ProductNotification from "../interfaces/product-notification";
-import supplier from "./supplier";
 import Unit from "./unit";
 import Category from "./category";
-import Supplier from "./supplier";
+import supplier from "./supplier";
+import ProductSupplier from "./product-supplier";
 
 export default class Product implements IProduct, IProductLoader {
   id: number;
   name: string;
   qty: number;
   unit_id: number;
-  category_id?: number;
-  supplier_id?: number;
+  category_id: number;
   img?: string;
   description?: string;
   notification?: ProductNotification;
+  category?: Category;
   unit?: Unit;
-  supplier?: supplier
-  category?: category;
+  timestamp: ITimestamp;
+  suppliers?: ProductSupplier[];
 
   static key: string = 'products';
 
@@ -27,18 +26,21 @@ export default class Product implements IProduct, IProductLoader {
     if (pro && typeof pro === 'object') {
       Object.keys(pro).forEach(k => this[k] = pro[k])
     }
-    if(!this.img) this.img = '/assets/pics/product.png'
-    if(!this.qty) this.qty = 0
-    if(!(this.notification instanceof ProductNotification)) this.notification = new ProductNotification(this.notification)
+    if (!this.img) this.img = '/assets/pics/product.png'
+    if (!this.qty) this.qty = 0
+    if (!this.suppliers) this.suppliers = []
+    if (!(this.notification instanceof ProductNotification)) this.notification = new ProductNotification(this.notification)
   }
-  timestamp: ITimestamp;
-  setCategory(c: category) {
+  get load_suppliers(): Promise<ProductSupplier[]> {
+    return load(this)
+    async function load(pro: Product) {
+      const ps = await ModelService.find({ model: ProductSupplier.key, search_value: pro.id, all: true })
+      return pro.suppliers = ps.map(s => new ProductSupplier(s))
+    }
+  }
+  setCategory(c: Category) {
     this.category = c
     this.category_id = c ? c.id : undefined
-  }
-  setSupplier(s: supplier) {
-    this.supplier = s
-    this.supplier_id = s ? s.id : undefined
   }
 
   setUnit(u: Unit) {
@@ -51,22 +53,18 @@ export default class Product implements IProduct, IProductLoader {
       return this.unit = new Unit(u)
     })
   }
-  
+
   get is_valid(): boolean {
     return this.name && !isNaN(this.id)
   }
-  
-  get load_category(): Promise<Category> {
-    return ModelService.find({ model: Category.key, search_value: this.category_id }).then(cat => {
-      this.category = new Category(cat)
-      return this.category
-    })
-  }
 
-  get load_supplier(): Promise<Supplier> {
-    return ModelService.find({ model: Supplier.key, search_value: this.supplier_id }).then(sup => {
-      return this.supplier = new Supplier(sup)
-    })
+  get load_category(): Promise<Category> {
+    return load(this)
+    async function load(pro: Product) {
+      const cat = await ModelService.find({ model: Category.key, search_value: pro.category_id })
+      pro.category = new Category(cat)
+      return pro.category
+    }
   }
 
   static async createProduct(pro: IProduct): Promise<Product> {
