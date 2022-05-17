@@ -42,6 +42,17 @@ ion-header {
   }
 }
 
+ion-item-option {
+  &.update {
+    background: #DBDAF7;
+    color: #5A6CF3;
+  }
+
+  &.delete {
+    background: #f3d8f1;
+    color: #d42582;
+  }
+}
 
 .icon {
   width: 55px;
@@ -108,6 +119,14 @@ ion-header {
   svg {
     position: absolute;
   }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-end {
+  text-align: right;
 }
 
 .hide,

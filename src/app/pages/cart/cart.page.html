@@ -26,43 +26,46 @@
       </div>
     </ion-list-header>
     <ion-item-sliding class="product-card" *ngFor="let cart_item of filteredProducts">
-      <ion-item lines="none" (click)="openProductDetailPage(cart_item.product)">
+      <ion-item button="true" lines="none" (click)="openProductDetailPage(cart_item.product)">
         <ion-thumbnail slot="start">
           <ion-img src="assets/pics/product.png"></ion-img>
         </ion-thumbnail>
         <ion-label class="ion-no-margin">
           <h2>{{ cart_item.product.name }}</h2>
           <p>
+            <ion-text color="primary">{{ cart_item.formattedPrice }}</ion-text>
+          </p>
+          <p>
             <ion-text color="success">{{ cart_item.formattedAmount }}</ion-text>
           </p>
         </ion-label>
         <div slot="end" class="qty-wrapper">
           <div class="qty-btn-wrapper">
-            <ion-button (click)="onClick()" class="decrease" expand="full" size="small">-</ion-button>
+            <ion-button (click)="onClick()" shape="round" class="decrease" expand="full" size="small"><ion-icon name="remove"></ion-icon></ion-button>
             <ion-text>{{ cart_item.qty }}</ion-text>
-            <ion-button (click)="onClick()" class="increase" expand="full" size="small">+</ion-button>
+            <ion-button (click)="onClick()" shape="round" class="increase" expand="full" size="small"><ion-icon name="add"></ion-icon></ion-button>
           </div>
           <ion-label class="label_unit">{{ cart_item.product.unit.symbol }}</ion-label>
         </div>
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="delete(cart_item.id)">DELETE</ion-item-option>
+        <ion-item-option class="delete" (click)="delete(cart_item.id)"><ion-icon name="trash-outline" size="large"></ion-icon></ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
 
   <div style="height: 125px;"></div>
 
-  <div #totalWrapper class="total-wrapper" slot="fixed"
+  <div #totalWrapper class="total-wrapper" slot="fixed" *ngIf="selectedSupplier"
     style="bottom: 0; width: 100%; padding: 16px 16px;background-color: #fff;">
     <ion-label style="margin-bottom: 4px;">
       <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
         <h3 style="font-size:large; font-weight: bold;">Total</h3>
-        <h3 style="font-size:large; font-weight: bold;">100</h3>
+        <h3 style="font-size:large; font-weight: bold;">{{ total }}</h3>
       </div>
     </ion-label>
     <ion-button style="height:60px; --border-radius: 16px;" shape="round" class="add_to_cart_btn" expand="full"
-      color="success">
+      color="success" (click)="proceedOrder()">
       Proceed To Order
     </ion-button>
   </div>

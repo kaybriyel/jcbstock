@@ -19,7 +19,7 @@
       </div>
     </ion-list-header>
     <ion-item-sliding class="category-card" *ngFor="let category of filteredCategories">
-      <ion-item lines="none" (click)="select(category)">
+      <ion-item button lines="none" (click)="select(category)">
         <ion-thumbnail slot="start">
           <ion-img src="{{category.img}}"></ion-img>
         </ion-thumbnail>

@@ -6,8 +6,7 @@
     <ion-searchbar #searchBar *ngIf="searchEnable" [(ngModel)]="searchValue" [debounce]="250"></ion-searchbar>
     <ion-icon *ngIf="searchEnable" slot="end" class="close-btn" name="close" (click)="toggleSearch()"></ion-icon>
   </ion-toolbar>
-  <ion-segment *ngIf="list" value="{{selectedWeek}}" scrollable="true"
-    (ionChange)="segmentChanged($event)">
+  <ion-segment *ngIf="list" value="{{selectedWeek}}" scrollable="true" (ionChange)="segmentChanged($event)">
     <ion-segment-button *ngFor="let week of weeks" value="{{week}}" (click)="scrollIntoView($event)">
       <ion-label>{{noUnderscore(week)}}</ion-label>
     </ion-segment-button>
@@ -16,38 +15,39 @@
 
 <ion-content #content [scrollEvents]="true" (ionScrollStart)="scrollStart()" (ionScroll)="scrolling($event)"
   (ionScrollEnd)="scrollEnd()">
-  <div style="height: 110px;"></div>
-  <ion-list *ngIf="selectedWeek" class="ion-padding">
-    <ion-list-header class="ion-no-padding">
-      <div style="width: 100%; display: flex; justify-content: space-between;">
-        <h4>Count</h4>
-        <h5>{{ filteredOrders.length }}</h5>
-      </div>
-    </ion-list-header>
-    <ion-item-sliding class="order-card" *ngFor="let order of filteredOrders">
-      <ion-item lines="none">
-        <ion-thumbnail slot="start">
-          <div class="icon icon-success fit" name="">
-            <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M1.71471 7.08307L1 2.94249L4.85435 4.85942M1.71471 7.08307V12.8083L9.06607 17M1.71471 7.08307L9.06607 10.6102M9.06607 17L15.6517 14.853V8.15655M9.06607 17V10.6102M15.6517 8.15655L18 4.73163L10.4955 1L8.35135 4.06709M15.6517 8.15655L8.35135 4.06709M15.6517 8.15655L9.06607 10.6102M8.35135 4.06709L4.85435 4.85942M9.06607 10.6102L8.70871 6.77636L4.85435 4.85942"
-                stroke="#fff" />
-            </svg>
-          </div>
-        </ion-thumbnail>
-        <ion-label class="ion-no-margin">
-          <h2>{{ order.supplier.name }}</h2>
-          <p>{{ order.itemCount }}</p>
-          <p style="color: #ccc; font-size: .8em;">{{ order.date }}</p>
-        </ion-label>
-        <ion-label class="label_unit" slot="end">{{ order.status }}</ion-label>
-      </ion-item>
-      <ion-item-options side="end">
-        <ion-item-option color="primary">UPDATE</ion-item-option>
-        <ion-item-option color="danger">DELETE</ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
+  <div style="height: 7.5em;"></div>
+  <div class="ion-margin" style="border-radius: 16px; overflow: hidden" *ngFor="let odn of orderNotes">
+    <ion-list class="ion-no-padding">
+      <ion-list-header class="ion-no-padding">
+        <div style="width: 100%; display: flex; padding: 0 16px; justify-content: space-between;">
+          <h4 class="ion-no-margin">{{ odn.supplier.name }}</h4>
+          <!-- <h5>{{ filteredOrders.length }}</h5> -->
+        </div>
+      </ion-list-header>
+      <ion-item-sliding *ngFor="let order of odn.items">
+        <ion-item *ngIf="order.product_supplier" lines="full">
+          <ion-thumbnail slot="start">
+            <div class="icon icon-success fit" name="" *ngIf="order.product_supplier.product.img">
+              <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M1.71471 7.08307L1 2.94249L4.85435 4.85942M1.71471 7.08307V12.8083L9.06607 17M1.71471 7.08307L9.06607 10.6102M9.06607 17L15.6517 14.853V8.15655M9.06607 17V10.6102M15.6517 8.15655L18 4.73163L10.4955 1L8.35135 4.06709M15.6517 8.15655L8.35135 4.06709M15.6517 8.15655L9.06607 10.6102M8.35135 4.06709L4.85435 4.85942M9.06607 10.6102L8.70871 6.77636L4.85435 4.85942"
+                  stroke="#fff" />
+              </svg>
+            </div>
+            <ion-img *ngIf="!order.product_supplier.product.img" src="assets/pics/product.png"></ion-img>
+          </ion-thumbnail>
+          <ion-label class="ion-no-margin">
+            <div>{{ order.product_supplier.product.name }}</div>
+            <div>{{ order.product_supplier.formattedPrice }}</div>
+          </ion-label>
+          <ion-label slot="end">
+            <div class="text-end">{{ order.qty }}</div>
+            <div class="text-end">{{ order.formattedAmount }}</div>
+          </ion-label>
+        </ion-item>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
   <div style="height: 55px"></div>
   <ion-fab #addBtn vertical="bottom" horizontal="end" slot="fixed" (click)="openCreateOrderPage()">
     <ion-fab-button color="success">

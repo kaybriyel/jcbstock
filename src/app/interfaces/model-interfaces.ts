@@ -72,7 +72,7 @@ export interface IProductLoader {
 export interface IOrderItem {
   id: number
   order_note_id: number
-  supplier_product_id: number
+  product_supplier_id: number
   qty: number,
   unit_price: number
   timestamp: ITimestamp
@@ -80,8 +80,9 @@ export interface IOrderItem {
 
 export interface IOrderItemLoader {
   order_note?: OrderNote
-  get load_supplier(): Promise<Supplier>
-  get load_product(): Promise<Product>
+  product_supplier?: ProductSupplier
+  get formattedAmount(): string
+  get load_product_supplier(): Promise<ProductSupplier>
   get load_order_note(): Promise<OrderNote>
   get is_valid(): boolean
 }

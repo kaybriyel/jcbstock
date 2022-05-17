@@ -15,7 +15,7 @@ export default class OrderNote implements IOrderNote, IOrderNoteLoader {
   static key: string = 'order-notes'
 
   constructor(odn?: IOrderNote) {
-    if(odn && typeof odn === 'object') {
+    if (odn && typeof odn === 'object') {
       Object.keys(odn).forEach(k => this[k] = odn[k])
     }
   }
@@ -23,7 +23,7 @@ export default class OrderNote implements IOrderNote, IOrderNoteLoader {
   get is_valid(): boolean {
     return !isNaN(this.id) && !isNaN(this.supplier_id) && !isNaN(this.item_count)
   }
-  
+
   get load_supplier(): Promise<supplier> {
     return ModelService.find({ model: Supplier.key, search_value: this.supplier_id }).then(sup => {
       return this.supplier = new Supplier(sup)
@@ -36,12 +36,30 @@ export default class OrderNote implements IOrderNote, IOrderNoteLoader {
     })
   }
 
-  static createOrderNote(odn: IOrderNote): OrderNote {
-    return new OrderNote
+  static async createOrderNote(odn: IOrderNote): Promise<OrderNote> {
+    const o = await ModelService.create({ name: OrderNote.key, object: odn })
+    return new OrderNote(o)
   }
 
   static async load(): Promise<OrderNote[]> {
     const { result } = await ModelService.getLocalData(OrderNote.key)
     return result ? result.map(c => new OrderNote(c)) : []
+  }
+
+  async save() {
+    if (isNaN(this.id)) {
+      const { id, timestamp } = await OrderNote.createOrderNote(this)
+      this.id = id
+      this.timestamp = timestamp
+    } else {
+      await ModelService.update({ name: OrderNote.key, object: this })
+    }
+
+    if (this.items) {
+      for (const i of this.items) {
+        i.order_note_id = this.id
+        await i.save()
+      }
+    }
   }
 }

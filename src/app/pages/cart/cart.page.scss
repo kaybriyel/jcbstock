@@ -80,8 +80,10 @@ ion-content {
   
               ion-button {
                 flex: 1;
-                font-size: 16px;
+                // font-size: 16px;
                 --box-shadow: none;
+                --border-radius: 16px;
+                
                 &.decrease {
                   --background: #f3d8f1;
                   color: #d42582;

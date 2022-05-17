@@ -29,6 +29,7 @@ export class UpdateSupplierComponent implements OnInit {
     const { result } = await ModelService.getLocalData('update-supplier-page')
     this.supplier = new Supplier(result)
     await this.supplier.load_products
+    for(const ps of this.supplier.products) await ps.load_product
     this.prev = JSON.parse(JSON.stringify(this.supplier))
   }
 

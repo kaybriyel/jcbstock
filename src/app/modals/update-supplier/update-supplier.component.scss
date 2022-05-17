@@ -128,13 +128,22 @@ ion-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 70px;
+            height: 35px;
             ion-card-title {
               font-size: 16px;
               padding: 0 8px;
               text-align: center;
             }
-          }         
+          }
+          ion-card-content {
+            height: 35px;
+            .unit-price {
+              background-color: #d8f3f1;
+              color: #2dd36f;
+              border-radius: 16px;
+              padding-top: 1px;
+            }
+          }
         }
 
       }

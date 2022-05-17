@@ -15,6 +15,11 @@ export default class ProductSupplier implements IProductSupplier, IProductSuppli
     }
   }
 
+  static async load(): Promise<ProductSupplier[]> {
+    const { result } = await ModelService.getLocalData(ProductSupplier.key)
+    return result ? result.map(c => new ProductSupplier(c)) : []
+  }
+
   id: number;
   supplier_id: number;
   product_id: number;

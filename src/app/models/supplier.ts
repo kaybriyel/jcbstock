@@ -3,11 +3,23 @@ import { ModelService } from "../services/model.service";
 import CartItem from "./cart-item";
 import cartItem from "./cart-item";
 import OrderItem from "./order-item";
+import OrderNote from "./order-note";
 import Product from "./product";
 import product from "./product";
 import ProductSupplier from "./product-supplier";
 
 export default class Supplier implements ISupplier, ISupplierLoader {
+  createOrderNote(cis?: CartItem[]) {
+    const odn = new OrderNote
+    odn.supplier_id = this.id
+    odn.supplier = this
+    if (cis) {
+      odn.item_count = cis.length
+      odn.items = cis.map(ci => OrderItem.fromCartItem(ci))
+    }
+    return odn
+  }
+
   id: number;
   name: string;
   img?: string;
@@ -28,11 +40,11 @@ export default class Supplier implements ISupplier, ISupplierLoader {
     return load(this)
     async function load(sup: Supplier) {
       await sup.load_products
-      for(const ps of sup.products) await ps.load_cart_item
+      for (const ps of sup.products) await ps.load_cart_item
       return sup.cart_items = sup.products.map(ps => ps.cart_item).filter(ps => ps)
     }
   }
-  
+
   get is_valid(): boolean {
     return this.name && !isNaN(this.id)
   }

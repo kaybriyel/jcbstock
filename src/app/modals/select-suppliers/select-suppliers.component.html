@@ -19,7 +19,7 @@
       </div>
     </ion-list-header>
     <ion-item-sliding class="supplier-card" *ngFor="let supplier of filteredSuppliers">
-      <ion-item lines="none" (click)="select(supplier)">
+      <ion-item button lines="none" (click)="select(supplier)">
         <ion-thumbnail slot="start">
           <ion-img src="{{supplier.img}}"></ion-img>
         </ion-thumbnail>

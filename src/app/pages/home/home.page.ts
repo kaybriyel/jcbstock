@@ -4,6 +4,7 @@ import { CreateCategoryComponent } from 'src/app/modals/create-category/create-c
 import { CreateProductComponent } from 'src/app/modals/create-product/create-product.component';
 import { SelectUnitsComponent } from 'src/app/modals/select-units/select-units.component';
 import Category from 'src/app/models/category';
+import OrderNote from 'src/app/models/order-note';
 import Product from 'src/app/models/product';
 import Supplier from 'src/app/models/supplier';
 
@@ -46,9 +47,11 @@ export class HomePage implements OnInit {
     const categories = await Category.load()
     const products = await Product.load()
     const suppliers = await Supplier.load()
+    const order_notes = await OrderNote.load()
     this.data.category_count = categories.length
     this.data.product_count = products.length
     this.data.supplier_count = suppliers.length
+    this.data.order_note_count = order_notes.length
 
   }
 

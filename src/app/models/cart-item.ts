@@ -1,5 +1,4 @@
 import { ICartItem, ICartItemLoader } from "../interfaces/model-interfaces";
-import { DetailProductComponent } from "../modals/detail-product/detail-product.component";
 import { ModelService } from "../services/model.service";
 import Product from "./product";
 import ProductSupplier from "./product-supplier";
@@ -17,10 +16,22 @@ export default class CartItem implements ICartItem, ICartItemLoader {
       Object.keys(c).forEach(k => this[k] = c[k])
     }
   }
+
+  static async load(): Promise<CartItem[]> {
+    const { result } = await ModelService.getLocalData(CartItem.key)
+    return result ? result.map(c => new CartItem(c)) : []
+  }
+
   get formattedAmount(): string {
     if(!this.product_supplier) this.load_product_supplier
     return `${this.product_supplier.currency.symbol} ${this.amount}`
   }
+
+  get formattedPrice(): string {
+    if(!this.product_supplier) this.load_product_supplier
+    return this.product_supplier ? this.product_supplier.formattedPrice : ''
+  }
+
   product?: Product;
   get load_product(): Promise<Product> {
     return load(this)

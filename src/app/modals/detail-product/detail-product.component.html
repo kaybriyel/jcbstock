@@ -21,13 +21,7 @@
 <ion-content #content [scrollEvents]="true" (ionScrollStart)="scrollStart()" (ionScroll)="scrolling($event)"
   (ionScrollEnd)="scrollEnd()">
 
-  <div style="height: 32vh;"></div>
-
-  <ion-item lines="none">
-    <ion-label class="input-label" position="stacked">Notes & Descriptions</ion-label>
-    <ion-textarea style="--padding-top: 0;padding: 16px" class="radius mt-15" rows="5" cols="20"
-      placeholder="Enter any notes here..." [(ngModel)]="product.description"></ion-textarea>
-  </ion-item>
+  <div style="height: 35vh;"></div>
 
   <ion-item *ngIf="product.notification.is_enable" lines="none" style="position: relative; margin-top: 8px">
     <ion-label class="input-label" position="stacked" style="opacity: 1;">Notification</ion-label>
@@ -74,7 +68,7 @@
     </div>
     <ul class="ion-no-padding ion-no-margin">
       <li *ngFor="let ps of product.suppliers">
-        <ion-card class="ion-no-padding ion-no-margin {{ selectedSupplier(ps.id) }}" (click)="selectSupplier(ps)">
+        <ion-card class="ion-no-padding ion-no-margin {{ selectedSupplier(ps.id) }}" button (click)="selectSupplier(ps)">
           <img width="100%" height="115px" src="{{ps.supplier.img || 'assets/pics/product.png'}}">
           <ion-card-header class="ion-no-padding">
             <ion-card-title class="ion-no-padding">{{ ps.supplier.name }}</ion-card-title>
@@ -87,6 +81,12 @@
       </li>
     </ul>
   </div>
+
+  <ion-item lines="none">
+    <ion-label class="input-label" position="stacked">Notes & Descriptions</ion-label>
+    <ion-textarea style="--padding-top: 0;padding: 16px" class="radius mt-15" rows="5" cols="20"
+      placeholder="Enter any notes here..." [(ngModel)]="product.description"></ion-textarea>
+  </ion-item>
 
   <div style="height: 100px;"></div>
 

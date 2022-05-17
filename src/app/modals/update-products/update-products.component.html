@@ -1,6 +1,3 @@
-<p>
-  update-products works!
-</p>
 <ion-header #header class="ion-no-border fixed" style="background-color: #f8f8fb;--background-url: {{ url(product?.img) }}">
   <ion-toolbar class="ion-padding">
     <ion-icon slot="start" class="back-btn" name="chevron-back-outline" (click)="back()"></ion-icon>
@@ -61,18 +58,18 @@
     </div>
     <ul class="ion-no-padding ion-no-margin">
       <li *ngFor="let ps of product.suppliers">
-        <ion-card class="ion-no-padding ion-no-margin" (click)="updatePrice(ps)">
+        <ion-card button class="ion-no-padding ion-no-margin" (click)="updatePrice(ps)">
           <img width="100%" height="115px" src="{{ps.supplier.img || 'assets/pics/product.png'}}">
           <ion-card-header class="ion-no-padding">
             <ion-card-title class="ion-no-padding">{{ ps.supplier.name }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            {{ ps.formattedPrice }}
+            <div class="unit-price">{{ ps.formattedPrice }}</div>
           </ion-card-content>
         </ion-card>
       </li>
       <li>
-        <ion-card class="ion-no-padding ion-no-margin" (click)="selectSupplier()">
+        <ion-card button class="ion-no-padding ion-no-margin" (click)="selectSupplier()">
           <img width="100%" height="115px" src="assets/pics/product.png">
           <ion-card-header class="ion-no-padding">
             <ion-card-title class="ion-no-padding">ADD</ion-card-title>

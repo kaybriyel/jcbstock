@@ -1,0 +1,33 @@
+ion-header {
+  ion-toolbar {
+    padding: 0;
+    --ion-padding: 16px;
+
+    ion-searchbar {
+      --border-radius: 16px;
+    }
+
+    .back-btn,
+    .search-btn {
+      background-color: #d8f3f1;
+      padding: 0.5em;
+      font-size: medium;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #25d482;
+    }
+
+    .close-btn {
+      background-color: #f3d8f1;
+      padding: 0.5em;
+      font-size: medium;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #d42582;
+    }
+  }
+}
+
+ion-content {
+  --background: #f8f8fb;
+}

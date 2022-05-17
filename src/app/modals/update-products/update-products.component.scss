@@ -141,6 +141,13 @@ ion-content {
           ion-card-content {
             height: 35px;
             text-align: center;
+
+            .unit-price {
+              background-color: #d8f3f1;
+              color: #2dd36f;
+              border-radius: 16px;
+              padding-top: 1px;
+            }
           }
         }
 

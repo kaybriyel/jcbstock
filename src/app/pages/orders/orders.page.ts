@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonContent, IonSearchbar, NavController, Platform } from '@ionic/angular';
+import CartItem from 'src/app/models/cart-item';
 import OrderNote from 'src/app/models/order-note';
+import Supplier from 'src/app/models/supplier';
 import { IOrders } from '../../interfaces/model-interfaces';
 
 @Component({
@@ -24,6 +26,7 @@ export class OrdersPage implements OnInit {
   list: IOrders
   weeks: string[]
   selectedWeek: string
+  orderNotes: OrderNote[]
 
   ngOnInit() {
     this.searchValue = ''
@@ -32,9 +35,10 @@ export class OrdersPage implements OnInit {
 
   ionViewDidEnter() {
     this.loadData()
+    this.orderNotes = []
   }
 
-  loadData() {
+  async loadData() {
     this.list = {
       week_1: [],
       week_2: [],
@@ -43,24 +47,24 @@ export class OrdersPage implements OnInit {
       week_5: []
     }
 
+    this.orderNotes = await OrderNote.load()
+    this.orderNotes.forEach(async on => {
+      on.load_supplier
+      await on.load_items
+      on.items.forEach(async i => {
+        await i.load_product_supplier
+        await i.product_supplier.load_product
+        console.log(i)
+      })
+    })
+    console.log(this.orderNotes)
+    // for(const s of suppliers) await s.load_cart_items
+    // this.suppliers = suppliers.filter(s => s.cart_items.length)
     this.selectWeek('week_1')
   }
 
   selectWeek(week: string) {
     this.selectedWeek = week
-    const orderNote: OrderNote[] = []
-    this.list[week] = orderNote
-    const weekDay = this.weeks.indexOf(week) * 7
-    for (let i = 0; i < 3; i++) {
-      const date = new Date
-      date.setDate(date.getDate() + i + weekDay)
-      // const orderItem:OrderItem = {
-      //   qty: 0,
-      //   supplier_id: 0,
-      //   product_id: ''
-      // }
-      // orderNote.push()
-    }
   }
 
   openCreateOrderPage() {
@@ -95,7 +99,8 @@ export class OrdersPage implements OnInit {
   }
 
   get filteredOrders() {
-    return this.list[this.selectedWeek]
+    // return this.list[this.selectedWeek]
+    return []
   }
 
   noUnderscore(s: string) {

@@ -19,7 +19,7 @@
       </div>
     </ion-list-header>
     <ion-item-sliding class="unit-card" *ngFor="let unit of filteredUnits">
-      <ion-item lines="none" class="ion-no-padding" (click)="select(unit)">
+      <ion-item button lines="none" class="ion-no-padding" (click)="select(unit)">
         <div class="icon icon-success me" [attr.name]="unit.symbol"></div>
         <ion-label class="ion-no-margin">
           <h2>{{ unit.name }}</h2>
