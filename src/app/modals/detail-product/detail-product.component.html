@@ -37,7 +37,8 @@
         <span>We will notify you when your product quantity is below </span>
       </div>
       <div style="flex: 3; display: flex; align-items: center; position: relative">
-        <ion-input class="ion-no-margin" disabled style="border-radius: 16px 0 0 16px" [ngModel]="product.notification.trigger"></ion-input>
+        <ion-input class="ion-no-margin" disabled style="border-radius: 16px 0 0 16px"
+          [ngModel]="product.notification.trigger"></ion-input>
         <div style="height: 51px;background: #F8F8FB; padding:16px;border-radius: 0 16px 16px 0">
           <span style="color: #25d482">{{ product.unit.symbol }}</span>
         </div>
@@ -45,15 +46,20 @@
     </div>
   </ion-item>
 
-  <ion-item lines="none" style="position: relative; margin-top: 8px">
+  <ion-item lines="none" *ngIf="cartItem" style="position: relative; margin-top: 8px">
     <ion-label class="input-label" position="stacked">In Cart Quantity</ion-label>
     <div style="margin-top:8px;display: flex; align-items: center">
       <div style="font-size: 12px; color: #ccc; flex: 4; margin-right: 5px">
-        <div>You have {{ product.qty }} {{ product.unit.symbol }} in your cart</div>
-        <div *ngIf="input_qty">{{ input_qty }} {{ product.unit.symbol }} will be added to your cart</div>
+        <div>You have <ion-text color="{{ successOrDanger(cart_qty) }}">{{ cart_qty }} {{ product.unit.symbol }}
+          </ion-text> in your cart</div>
+        <div *ngIf="input_qty">
+          <ion-text color="{{ successOrDanger(input_qty) }}">{{ abs(input_qty) }} {{ product.unit.symbol }}</ion-text>
+          will be {{ addOrRemove() }} your cart
+        </div>
       </div>
       <div style="flex: 3; display: flex; align-items: center; position: relative">
-        <ion-input class="ion-no-margin" style="border-radius: 16px 0 0 16px" placeholder="0" [(ngModel)]="input_qty"></ion-input>
+        <ion-input class="ion-no-margin" type="number" style="border-radius: 16px 0 0 16px" placeholder="0"
+          [(ngModel)]="input_qty"></ion-input>
         <div style="height: 51px;background: #F8F8FB; padding:16px;border-radius: 0 16px 16px 0">
           <span style="color: #25d482">{{ product.unit.symbol }}</span>
         </div>
@@ -68,13 +74,14 @@
     </div>
     <ul class="ion-no-padding ion-no-margin">
       <li *ngFor="let ps of product.suppliers">
-        <ion-card class="ion-no-padding ion-no-margin">
+        <ion-card class="ion-no-padding ion-no-margin {{ selectedSupplier(ps.id) }}" (click)="selectSupplier(ps)">
           <img width="100%" height="115px" src="{{ps.supplier.img || 'assets/pics/product.png'}}">
           <ion-card-header class="ion-no-padding">
             <ion-card-title class="ion-no-padding">{{ ps.supplier.name }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            {{ ps.formattedPrice }}
+            <div class="unit-price">{{ ps.formattedPrice }}</div>
+            <div *ngIf="ps.cart_item"><ion-text color="{{successOrDanger(ps.cart_item.qty)}}">{{ ps.cart_item.qty }}</ion-text></div>
           </ion-card-content>
         </ion-card>
       </li>
@@ -83,11 +90,15 @@
 
   <div style="height: 100px;"></div>
 
-  <div #addTocartWrapper class="add-to-cart-wrapper" slot="fixed"
+  <div #buttonWrapper class="button-wrapper" slot="fixed"
     style="bottom: 0; width: 100%; padding: 16px 16px; background: #fff">
-    <ion-button disabled="{{!input_qty}}"  style="height:60px; --border-radius: 16px" class="add_to_cart_btn" shape="round" expand="full"
-      color="success">Add To Cart
+    <ion-button *ngIf="input_qty" style="height:60px; --border-radius: 16px" class="add_to_cart_btn"
+      shape="round" expand="full" color="success" (click)="addToCart()">Add To Cart
       <ion-badge *ngIf="input_qty" class="cart-qty">{{ input_qty }}</ion-badge>
+    </ion-button>
+    <ion-button *ngIf="!input_qty && cart_qty" style="height:60px; --border-radius: 16px" class="add_to_cart_btn"
+      shape="round" expand="full" color="success" (click)="viewCart()">view cart
+      <ion-badge *ngIf="cart_qty" class="cart-qty">{{ cart_qty }}</ion-badge>
     </ion-button>
   </div>
 </ion-content>

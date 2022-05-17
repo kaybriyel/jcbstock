@@ -1,5 +1,6 @@
 import { IProductSupplier as IProductSupplier, IProductSupplierLoader } from "../interfaces/model-interfaces";
 import { ModelService } from "../services/model.service";
+import CartItem from "./cart-item";
 import Currency from "./currency";
 import Product from "./product";
 import Supplier from "./supplier";
@@ -20,7 +21,17 @@ export default class ProductSupplier implements IProductSupplier, IProductSuppli
   currency_id: number;
   unit_price: number;
   supplier?: Supplier;
+  product?: Product;
   currency?: Currency;
+  cart_item?: CartItem;
+
+  get load_cart_item(): Promise<CartItem> {
+    return load(this)
+    async function load(sp: ProductSupplier) {
+      const ci = await ModelService.find({ model: CartItem.key, search_value: sp.id })
+      return ci ? sp.cart_item = new CartItem(ci) : null
+    }
+  }
 
   get formattedPrice(): string {
     if(!this.currency) this.load_currency
@@ -36,7 +47,11 @@ export default class ProductSupplier implements IProductSupplier, IProductSuppli
   }
 
   get load_product(): Promise<Product> {
-    throw new Error("Method not implemented.");
+    return load(this)
+    async function load(ps: ProductSupplier) {
+      const pro = await ModelService.find({ model: Product.key, search_value: ps.product_id })
+      return ps.product = new Product(pro)
+    }
   }
   get load_currency(): Promise<Currency> {
     return load(this)

@@ -5,13 +5,12 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
   <div style="height: 7vh"></div>
   <ion-list>
     <ion-item lines="none">
       <ion-label class="input-label" position="stacked">Currency</ion-label>
-      <ion-select [(ngModel)]="productSupplier.currency_id" class="radius mt" interface="action-sheet" placeholder="Select currency">
+      <ion-select value="{{productSupplier.currency_id}}" (ionChange)="selectCurrency($event)" class="radius mt" interface="action-sheet" placeholder="Select currency">
         <ion-select-option *ngFor="let cur of currencies" value="{{cur.id}}">{{ cur.code }}</ion-select-option>
       </ion-select>
     </ion-item>

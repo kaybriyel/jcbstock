@@ -30,11 +30,11 @@ export class InputPriceComponent implements OnInit {
     this.currencies = await Currency.load()
     const { result } = await ModelService.getSessionData('input-price-page')
     if(result) {
-      console.log(result)
       this.productSupplier = new ProductSupplier(result)
-      this.productSupplier.load_supplier
-      this.productSupplier.load_currency
+      // await this.productSupplier.load_supplier
+      // await this.productSupplier.load_currency
     }
+    console.log(this.productSupplier)
   }
 
   back() {
@@ -46,12 +46,20 @@ export class InputPriceComponent implements OnInit {
   }
 
   async ok() {
+    await this.productSupplier.load_currency
+    await this.productSupplier.load_supplier
     if(this.productSupplier.id === undefined) {
+      console.log('create')
       this.productSupplier = await ModelService.create({ name: ProductSupplier.key, object: this.productSupplier })
     } else {
+      console.log('update')
       await ModelService.update({ name: ProductSupplier.key, object: this.productSupplier })
     }
     this.modal.dismiss(this.productSupplier)
+  }
+
+  selectCurrency(e) {
+    this.productSupplier.currency_id = Number(e.detail.value)
   }
 
 }

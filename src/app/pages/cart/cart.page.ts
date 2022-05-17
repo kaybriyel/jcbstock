@@ -1,6 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IonContent, IonSearchbar, NavController, Platform } from '@ionic/angular';
+import { IonContent, IonSearchbar, ModalController, ModalOptions, NavController, Platform } from '@ionic/angular';
+import { DetailProductComponent } from 'src/app/modals/detail-product/detail-product.component';
+import CartItem from 'src/app/models/cart-item';
 import Product from 'src/app/models/product';
+import Supplier from 'src/app/models/supplier';
+import { ModelService } from 'src/app/services/model.service';
 
 @Component({
   selector: 'app-cart',
@@ -12,25 +16,42 @@ export class CartPage implements OnInit {
   @ViewChild('content') content: IonContent;
   @ViewChild('header', { read: ElementRef }) header: ElementRef;
   @ViewChild('totalWrapper', { read: ElementRef }) totalWrapper: ElementRef;
+  htmlModal: any;
 
-  constructor(private navCtrl: NavController, private platform: Platform) {
+  constructor(
+    private platform: Platform,
+    private modalCtrl: ModalController
+  ) {
     this.platform.keyboardDidHide.subscribe(() => this.totalWrapper.nativeElement.classList.remove('hide'))
     this.platform.keyboardDidShow.subscribe(() => this.totalWrapper.nativeElement.classList.add('hide'))
   }
 
   searchValue: string
   searchEnable: boolean = false
-  suppliers: string[]
-  selectedSupplier: string
-  list: Product[]
+  suppliers: Supplier[]
+  selectedSupplier: Supplier
+  list: CartItem[]
 
   ngOnInit() {
     this.searchValue = ''
-    this.suppliers = [
-      'Supplier_1', 'Supplier_2', 'Supplier_3', 'Supplier_4'
-    ]
+    this.suppliers = [];
+    this.loadData()
+  }
 
-    this.selectSupplier('Supplier_1')
+  async loadData() {
+    const suppliers = await Supplier.load()
+    for(const s of suppliers) await s.load_cart_items
+    this.suppliers = suppliers.filter(s => s.cart_items.length)
+    this.selectSupplier(this.suppliers[0])
+  }
+
+  async selectSupplier(sup: Supplier) {
+    if (!sup) return
+    this.selectedSupplier = sup
+    this.list = this.selectedSupplier.cart_items
+    for(const ci of this.list) {
+      await ci.load_product
+    }
   }
 
   scrollStart() {
@@ -48,25 +69,12 @@ export class CartPage implements OnInit {
   }
 
   segmentChanged(e) {
-    const smallNoSpace = t => t.toLowerCase().replace(/ /g, '')
-    this.selectSupplier(smallNoSpace(e.detail.value))
+    const sup = this.suppliers.find(s => s.name === e.detail.value)
+    this.selectSupplier(sup)
   }
 
   scrollIntoView(e) {
     e.target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-  }
-
-  selectSupplier(supplier: string) {
-    this.selectedSupplier = supplier
-    this.list = []
-    const supplierId = this.suppliers.indexOf(supplier)
-    for (let i = 0; i < 5; i++) {
-      // this.list.push({ name: 'Product ' + i, qty: 5, unit: { symbol: 'KG', id: 1 }, supplier: { name: this.noUnderscore(supplier), id: supplierId } })
-    }
-  }
-
-  back() {
-    this.navCtrl.back()
   }
 
   toggleSearch() {
@@ -75,7 +83,7 @@ export class CartPage implements OnInit {
 
   get filteredProducts() {
     const smallNoSpace = t => t.toLowerCase().replace(/ /g, '')
-    return this.list.filter(p => smallNoSpace(p.name).includes(smallNoSpace(this.searchValue)))
+    return this.list.filter(ci => smallNoSpace(ci.product.name).includes(smallNoSpace(this.searchValue)))
   }
 
   noUnderscore(s: string) {
@@ -86,7 +94,27 @@ export class CartPage implements OnInit {
     if (this.searchEnable) this.searchBar.setFocus()
   }
 
-  openProductDetailPage() {
-    this.navCtrl.navigateBack('/product-detail')
+  async presentModal(opt: ModalOptions) {
+    if(this.htmlModal && this.htmlModal.isConnected) return {}
+    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal.present()
+    return this.htmlModal.onWillDismiss()
+  }
+  
+  async openProductDetailPage(product: Product) {
+    if(!product) return
+    await ModelService.saveSessionData('product-detail-page', product)
+    await this.presentModal({ component: DetailProductComponent })
+    const list = await this.selectedSupplier.load_cart_items
+    list.forEach(async (ci, i) => {
+      await ci.load_product
+      this.list[i] = ci
+    })
+  }
+
+  async delete(id: number) {
+    const deleted = await ModelService.delete({ name: CartItem.key, id })
+    if (deleted)
+      this.list.splice(this.list.findIndex(c => c.id === id), 1)
   }
 }

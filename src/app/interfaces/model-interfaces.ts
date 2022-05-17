@@ -7,6 +7,7 @@ import Supplier from "../models/supplier"
 import Unit from "../models/unit"
 import Currency from "../models/currency"
 import ProductSupplier from "../models/product-supplier"
+import CartItem from "../models/cart-item"
 
 
 export interface ITimestamp {
@@ -58,6 +59,7 @@ export interface IProductLoader {
   category?: Category
   unit?: Unit
   suppliers?: ProductSupplier[]
+  get calc_cart_qty(): Promise<number>
   get load_unit(): Promise<Unit>
   get load_suppliers(): Promise<ProductSupplier[]>
   get load_category(): Promise<Category>
@@ -95,6 +97,9 @@ export interface IProductSupplier {
 export interface IProductSupplierLoader {
   supplier?: Supplier
   currency?: Currency
+  product?: Product
+  cart_item?: CartItem
+  get load_cart_item(): Promise<CartItem>
   get load_supplier(): Promise<Supplier>
   get load_product(): Promise<Product>
   get load_currency(): Promise<Currency>
@@ -139,8 +144,10 @@ export interface ISupplier {
 }
 
 export interface ISupplierLoader {
-  products?: Product[]
-  get load_products(): Promise<Product[]>
+  products?: ProductSupplier[]
+  cart_items?: CartItem[]
+  get load_cart_items(): Promise<CartItem[]>
+  get load_products(): Promise<ProductSupplier[]>
   get is_valid(): boolean
 }
 
@@ -154,4 +161,19 @@ export interface ICurrency {
 
 export interface ICurrencyLoader {
   conversions?: []
+}
+
+export interface ICartItem {
+  id: number
+  product_supplier_id: number
+  qty: number
+}
+
+export interface ICartItemLoader {
+  product_supplier?: ProductSupplier
+  product?: Product
+  get formattedAmount(): string
+  get load_product(): Promise<Product>
+  get load_product_supplier(): Promise<ProductSupplier>
+  get amount(): number
 }

@@ -136,7 +136,7 @@ ion-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 35px;
+            height: 30px;
             ion-card-title {
               font-size: 16px;
               padding: 0 8px;
@@ -144,8 +144,19 @@ ion-content {
             }
           }
           ion-card-content {
-            height: 35px;
+            height: 40px;
             text-align: center;
+
+            .unit-price {
+              background-color: #d8f3f1;
+              color: #2dd36f;
+              border-radius: 16px;
+              padding-top: 1px;
+            }
+          }
+
+          &.active {
+          box-shadow: 0 0 4px 0 #2dd36f;
           }
         }
 
@@ -153,7 +164,7 @@ ion-content {
     }
   }
 
-  .add-to-cart-wrapper {
+  .button-wrapper {
     .cart-qty {
       position: absolute;
       border-radius: 16px;

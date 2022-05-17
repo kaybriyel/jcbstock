@@ -1,8 +1,11 @@
 import { ISupplier, ISupplierLoader, ITimestamp } from "../interfaces/model-interfaces";
 import { ModelService } from "../services/model.service";
+import CartItem from "./cart-item";
+import cartItem from "./cart-item";
 import OrderItem from "./order-item";
 import Product from "./product";
 import product from "./product";
+import ProductSupplier from "./product-supplier";
 
 export default class Supplier implements ISupplier, ISupplierLoader {
   id: number;
@@ -10,7 +13,8 @@ export default class Supplier implements ISupplier, ISupplierLoader {
   img?: string;
   phone: string;
   product_count: number;
-  products?: product[];
+  products?: ProductSupplier[];
+  timestamp: ITimestamp;
   static key: string = 'suppliers'
 
   constructor(sup?: ISupplier) {
@@ -18,25 +22,27 @@ export default class Supplier implements ISupplier, ISupplierLoader {
       Object.keys(sup).forEach(k => this[k] = sup[k])
     }
   }
-  timestamp: ITimestamp;
+  cart_items?: cartItem[];
+
+  get load_cart_items(): Promise<cartItem[]> {
+    return load(this)
+    async function load(sup: Supplier) {
+      await sup.load_products
+      for(const ps of sup.products) await ps.load_cart_item
+      return sup.cart_items = sup.products.map(ps => ps.cart_item).filter(ps => ps)
+    }
+  }
+  
   get is_valid(): boolean {
     return this.name && !isNaN(this.id)
   }
-  get load_products(): Promise<product[]> {
-    const sup = this
-    return getProducts()
-    async function getProducts() {
-      const odn = await ModelService.find({ model: OrderItem.key, search_key: 'supplier_id', search_value: sup.id, all: true })
-      const pro = await ModelService.find({ model: Product.key, search_key: 'supplier_id', search_value: sup.id, all: true })
 
-      const oId = odn.map(({ product_id }) => product_id)
-      const pId = pro.map(({ id }) => id)
-      
-      const proIdSet = new Set([...oId, ...pId])
-
-      const proId = [...proIdSet]
-      sup.product_count = proId.length
-      return sup.products = proId.map(id => new Product(pro.find(p => p.id === id)))
+  get load_products(): Promise<ProductSupplier[]> {
+    return load(this)
+    async function load(sup: Supplier) {
+      const pros = await ModelService.find({ model: ProductSupplier.key, search_key: 'supplier_id', search_value: sup.id, all: true })
+      sup.product_count = pros.length
+      return sup.products = pros.map(ps => new ProductSupplier(ps))
     }
   }
 

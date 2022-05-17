@@ -44,6 +44,7 @@ export class UpdateProductsComponent implements OnInit {
     this.product = new Product(result)
     await this.product.load_unit
     await this.product.load_suppliers
+    for(const ps of this.product.suppliers) await ps.load_supplier
     this.prev = JSON.parse(JSON.stringify(this.product))
   }
 
@@ -95,7 +96,9 @@ export class UpdateProductsComponent implements OnInit {
 
   async selectSupplier() {
     const { data: supplier } = await this.presentModal({ component: SelectSuppliersComponent })
-    const ps = await this.inputPrice(supplier)
+    let ps = new ProductSupplier
+    ps.supplier_id = supplier.id
+    ps = await this.inputPrice(ps)
     if (ps) this.product.suppliers.push(ps)
   }
 
@@ -113,7 +116,7 @@ export class UpdateProductsComponent implements OnInit {
 
   async inputPrice(ps: ProductSupplier) {
     if (ps) {
-      ModelService.saveSessionData('input-price-page', { ...ps, product_id: this.product.id, currency_id: ps.currency_id || 0 })
+      ModelService.saveSessionData('input-price-page', { ...ps, product_id: this.product.id, currency_id: (ps.currency_id || 0) })
       const { data } = await this.presentModal({ component: InputPriceComponent })
       return data
     }

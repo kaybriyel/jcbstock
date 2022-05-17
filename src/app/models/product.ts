@@ -31,10 +31,25 @@ export default class Product implements IProduct, IProductLoader {
     if (!this.suppliers) this.suppliers = []
     if (!(this.notification instanceof ProductNotification)) this.notification = new ProductNotification(this.notification)
   }
+
+  get calc_cart_qty(): Promise<number> {
+    return calQty(this)
+    async function calQty(pro: Product) {
+      await pro.load_suppliers
+      let qty = 0
+      for (const ps of pro.suppliers) {
+        await ps.load_cart_item
+        if (ps.cart_item)
+          qty += Number((ps.cart_item.qty) || 0)
+      }
+      return qty
+    }
+  }
+
   get load_suppliers(): Promise<ProductSupplier[]> {
     return load(this)
     async function load(pro: Product) {
-      const ps = await ModelService.find({ model: ProductSupplier.key, search_value: pro.id, all: true })
+      const ps = await ModelService.find({ model: ProductSupplier.key, search_key: 'product_id', search_value: pro.id, all: true })
       return pro.suppliers = ps.map(s => new ProductSupplier(s))
     }
   }

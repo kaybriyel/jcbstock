@@ -53,6 +53,7 @@ export class ProductsPage implements OnInit {
     if (!cat) return
     this.category = cat
     await this.category.load_products
+    this.category.products.forEach(p => p.load_suppliers)
   }
 
   async presentModal(opt: ModalOptions) {
@@ -131,6 +132,12 @@ export class ProductsPage implements OnInit {
 
   scrollIntoView(e) {
     e.target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+  }
+
+  qtyColor(pro: Product) {
+    if(pro.qty === 0) return 'danger'
+    else if(pro.qty < pro.notification.trigger) return 'warning'
+    return ''
   }
 
 }
