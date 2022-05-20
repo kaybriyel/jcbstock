@@ -5,7 +5,7 @@ export default class Unit implements IUnit, IUnitLoader {
 
   id: number;
   name: string;
-  symbol: string;
+  abbr: string;
   conversions: [];
   static key: string = 'units';
 
@@ -22,7 +22,7 @@ export default class Unit implements IUnit, IUnitLoader {
   }
 
   get is_valid(): boolean {
-    return this.name && this.symbol && !isNaN(this.id)
+    return this.name && this.abbr && !isNaN(this.id)
   }
 
   static async createUnit(u: IUnit): Promise<Unit> {
@@ -30,7 +30,7 @@ export default class Unit implements IUnit, IUnitLoader {
   }
 
   static default() {
-    return new Unit({ name: 'Kilogram', symbol: 'kg', id: 0 })
+    return new Unit({ name: 'Kilogram', abbr: 'kg', id: 0 })
   }
 }
 
@@ -38,9 +38,9 @@ const data = localStorage.getItem('units')
 if (!data) {
   (async () => {
     const list = [
-      { id: 0, name: 'Kilogram', symbol: 'kg' },
-      { id: 1, name: 'Liter', symbol: 'L' },
-      { id: 2, name: 'Milliliter', symbol: 'ml' }
+      { id: 0, name: 'Kilogram', abbr: 'kg' },
+      { id: 1, name: 'Liter', abbr: 'L' },
+      { id: 2, name: 'Milliliter', abbr: 'ml' }
     ]
     for(const u of list)
       await ModelService.create({ name: Unit.key, object: u })

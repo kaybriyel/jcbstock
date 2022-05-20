@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { NotificationService } from './services/notification.service';
 
 @Component({
@@ -7,7 +8,11 @@ import { NotificationService } from './services/notification.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private notificationService: NotificationService) {
-    window['notificationService'] = this.notificationService
+  constructor(private notificationService: NotificationService, platform: Platform) {
+    platform.ready().then(e => {
+      window['notificationService'] = this.notificationService
+      this.notificationService.initialOneSignal()
+      console.log('Platform is ready', e)
+    })
   }
 }

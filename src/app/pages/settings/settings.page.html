@@ -10,14 +10,30 @@
 <ion-content>
   <div style="height: 4em"></div>
   <ion-list>
-
-    <ion-item-sliding *ngFor="let item of list">
+    <ion-list-header>
+      <ion-label>Local Storage</ion-label>
+    </ion-list-header>
+    <ion-item-sliding *ngFor="let item of local">
       <ion-item button>
         <ion-label>{{ format(item.key) }}</ion-label>
         <ion-label slot="end">{{ item.count || 0 }}</ion-label>
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option class="delete" (click)="delete(item.key)"><ion-icon name="trash-outline" size="large"></ion-icon></ion-item-option>
+        <ion-item-option class="delete" (click)="deleteLocal(item.key)"><ion-icon name="trash-outline" size="large"></ion-icon></ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Session Storage</ion-label>
+    </ion-list-header>
+    <ion-item-sliding *ngFor="let item of session">
+      <ion-item button>
+        <ion-label>{{ format(item.key) }}</ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option class="delete" (click)="deleteSession(item.key)"><ion-icon name="trash-outline" size="large"></ion-icon></ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
 

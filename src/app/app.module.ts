@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { InputPriceComponent } from './alerts/input-price/input-price.component';
@@ -56,7 +55,7 @@ import { UpdateUnitsComponent } from './modals/update-units/update-units.compone
   ],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, OneSignal, PendingChangesGuard],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, PendingChangesGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

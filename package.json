@@ -19,8 +19,6 @@
     "@angular/platform-browser": "~13.2.2",
     "@angular/platform-browser-dynamic": "~13.2.2",
     "@angular/router": "~13.2.2",
-    "@awesome-cordova-plugins/onesignal": "^5.41.0",
-    "@ionic-native/onesignal": "^5.36.0",
     "@ionic/angular": "^6.0.0",
     "@ionic/cordova-builders": "^6.1.0",
     "cordova-android": "9.1.0",
@@ -70,13 +68,13 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
-      "onesignal-cordova-plugin": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-androidx": {}
+      "cordova-plugin-androidx": {},
+      "onesignal-cordova-plugin": {}
     },
     "platforms": [
       "android"

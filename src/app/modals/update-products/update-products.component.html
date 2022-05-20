@@ -7,7 +7,7 @@
 
   <div class="product-qty-wrapper">
     <ion-text color="success" (click)="selectUnit()">
-      <h5 class="ion-no-margin qty-value">{{ product.unit.symbol }}</h5>
+      <h5 class="ion-no-margin qty-value">{{ product.unit.abbr }}</h5>
     </ion-text>
     <ion-text (click)="selectUnit()">
       <small class="last-update">Select Unit</small>
@@ -39,7 +39,7 @@
       <div style="flex: 3; display: flex; align-items: center; position: relative">
         <ion-input class="ion-no-margin" [(ngModel)]="product.notification.trigger" style="border-radius: 16px 0 0 16px"></ion-input>
         <div style="height: 51px;background: #F8F8FB; padding:16px;border-radius: 0 16px 16px 0">
-          <span style="color: #25d482">{{ product.unit.symbol }}</span>
+          <span style="color: #25d482">{{ product.unit.abbr }}</span>
         </div>
       </div>
     </div>

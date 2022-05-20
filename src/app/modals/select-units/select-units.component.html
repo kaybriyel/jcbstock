@@ -20,11 +20,11 @@
     </ion-list-header>
     <ion-item-sliding class="unit-card" *ngFor="let unit of filteredUnits">
       <ion-item button lines="none" class="ion-no-padding" (click)="select(unit)">
-        <div class="icon icon-success me" [attr.name]="unit.symbol"></div>
+        <div class="icon icon-success me" [attr.name]="unit.abbr"></div>
         <ion-label class="ion-no-margin">
           <h2>{{ unit.name }}</h2>
         </ion-label>
-        <ion-label class="label_unit" slot="end">{{ unit.symbol }}</ion-label>
+        <ion-label class="label_unit" slot="end">{{ unit.abbr }}</ion-label>
       </ion-item>
     </ion-item-sliding>
   </ion-list>

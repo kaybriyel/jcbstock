@@ -45,7 +45,7 @@
             <ion-text>{{ cart_item.qty }}</ion-text>
             <ion-button (click)="onClick()" shape="round" class="increase" expand="full" size="small"><ion-icon name="add"></ion-icon></ion-button>
           </div>
-          <ion-label class="label_unit">{{ cart_item.product.unit.symbol }}</ion-label>
+          <ion-label class="label_unit">{{ cart_item.product.unit.abbr }}</ion-label>
         </div>
       </ion-item>
       <ion-item-options side="end">

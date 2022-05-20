@@ -9,7 +9,8 @@ export class SettingsPage implements OnInit {
 
   searchEnable: boolean
   searchValue: string
-  list: any[]
+  local: any[]
+  session: any[]
 
   constructor() { }
 
@@ -27,27 +28,31 @@ export class SettingsPage implements OnInit {
 
     const session = Object.keys(sessionStorage).map(k => {
       return {
-        key: k, count: 0
+        key: k
       }
     })
 
-    this.list = local.concat(session)
-
-    
+    this.local = local
+    this.session = session
   }
 
 
   get filtered() {
     const smallNoSpace = t => t ? t.toLowerCase().replace(/ /g, '') : t
-    return this.list.filter(p => smallNoSpace(p.name).includes(smallNoSpace(this.searchValue)))
+    return this.local.filter(p => smallNoSpace(p.name).includes(smallNoSpace(this.searchValue)))
   }
 
   toggleSearch() {
     this.searchEnable = !this.searchEnable
   }
 
-  delete(key: string) {
+  deleteLocal(key: string) {
     localStorage.removeItem(key)
+    this.loadData()
+  }
+
+  deleteSession(key: string) {
+    sessionStorage.removeItem(key)
     this.loadData()
   }
 

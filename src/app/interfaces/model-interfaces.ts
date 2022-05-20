@@ -34,7 +34,7 @@ export interface ICategoryLoader {
 export interface IUnit {
   id: number
   name: string
-  symbol: string
+  abbr: string
   timestamp?: ITimestamp
 }
 

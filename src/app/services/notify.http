@@ -1,0 +1,14 @@
+POST https://onesignal.com/api/v1/notifications HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic NTU0NDY1ZTUtMmRhMC00YThlLTk3ZWYtYmVhY2JkZmY5ZDdi
+
+{
+  "included_segments": ["Subscribed Users"],
+  "app_id": "648ebde3-b0c0-41d0-8640-9b7f5ef2eecb",
+  "headings": { "en": "Ionic One Signal" },
+  "contents": { "en": "Testing One Signal on ionic app" },
+  "data": { "action": "test action" },
+  "url": "https://jcbakery.herokuapp.com/order-note"
+  //chrome_web_image
+}
