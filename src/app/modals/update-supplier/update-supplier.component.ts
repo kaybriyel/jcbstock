@@ -39,6 +39,7 @@ export class UpdateSupplierComponent implements OnInit {
 
   async updateSupplier() {
     await ModelService.update({ name: Supplier.key, object: this.supplier })
+    this.modal.canDismiss = true
     this.modal.dismiss(this.supplier)
   }
 
@@ -49,6 +50,7 @@ export class UpdateSupplierComponent implements OnInit {
   scrollEnd() { }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 

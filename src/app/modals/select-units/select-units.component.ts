@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonContent, IonModal, IonSearchbar, ModalController, ModalOptions, NavController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import Unit from 'src/app/models/unit';
 import { ModelService } from 'src/app/services/model.service';
 import { CreateUnitComponent } from '../create-unit/create-unit.component';
@@ -17,14 +18,12 @@ export class SelectUnitsComponent implements OnInit {
 
   modal: IonModal
   htmlModal: any;
+  subscriptions: Subscription[]
 
   constructor(
     private modalCtrl: ModalController,
     private platform: Platform
-  ) {
-    this.platform.keyboardDidHide.subscribe(() => this.addBtn.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.addBtn.nativeElement.classList.add('hide'))
-  }
+  ) {}
 
   searchValue: string
   searchEnable: boolean = false
@@ -33,8 +32,22 @@ export class SelectUnitsComponent implements OnInit {
   ngOnInit() {
     this.searchValue = ''
     this.list = []
+    this.subscriptions = []
+
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keyboard hidden')
+      this.addBtn.nativeElement.classList.remove('hide')
+    }))
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keybaord shown')
+      this.addBtn.nativeElement.classList.add('hide')
+    }))
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
+  }
+  
   ionViewDidEnter() {
     this.loadData()
   }
@@ -45,7 +58,7 @@ export class SelectUnitsComponent implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if (this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({...opt, canDismiss: false})
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }
@@ -74,10 +87,12 @@ export class SelectUnitsComponent implements OnInit {
   }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
   select(unit: Unit) {
+    this.modal.canDismiss = true
     this.modal.dismiss(unit)
   }
 

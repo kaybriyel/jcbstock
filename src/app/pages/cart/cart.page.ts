@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonContent, IonSearchbar, ModalController, ModalOptions, NavController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { DetailProductComponent } from 'src/app/modals/detail-product/detail-product.component';
 import CartItem from 'src/app/models/cart-item';
 import Product from 'src/app/models/product';
@@ -17,16 +18,14 @@ export class CartPage implements OnInit {
   @ViewChild('header', { read: ElementRef }) header: ElementRef;
   @ViewChild('totalWrapper', { read: ElementRef }) totalWrapper: ElementRef;
   htmlModal: any;
+  subscriptions: Subscription[]
 
   constructor(
     private platform: Platform,
     private alertCtrl: AlertController,
     private modalCtrl: ModalController,
     private navCtrl: NavController
-  ) {
-    this.platform.keyboardDidHide.subscribe(() => this.totalWrapper.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.totalWrapper.nativeElement.classList.add('hide'))
-  }
+  ) { }
 
   searchValue: string
   searchEnable: boolean = false
@@ -38,6 +37,20 @@ export class CartPage implements OnInit {
     this.searchValue = ''
     this.suppliers = [];
     this.loadData()
+    this.subscriptions = []
+
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keybaord hidden')
+      this.totalWrapper.nativeElement.classList.remove('hide')
+    }))
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keybaord shown')
+      this.totalWrapper.nativeElement.classList.add('hide')
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
   }
 
   async loadData() {
@@ -98,7 +111,7 @@ export class CartPage implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if (this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({ ...opt, canDismiss: false })
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }
@@ -138,7 +151,7 @@ export class CartPage implements OnInit {
               await ModelService.delete({ name: CartItem.key, id: c.id })
             this.list = []
             await this.loadData()
-            if(!this.suppliers.length) {
+            if (!this.suppliers.length) {
               this.navCtrl.navigateBack('/orders')
             }
           }

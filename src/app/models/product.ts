@@ -3,7 +3,6 @@ import { ModelService } from "../services/model.service";
 import ProductNotification from "../interfaces/product-notification";
 import Unit from "./unit";
 import Category from "./category";
-import supplier from "./supplier";
 import ProductSupplier from "./product-supplier";
 
 export default class Product implements IProduct, IProductLoader {
@@ -19,6 +18,8 @@ export default class Product implements IProduct, IProductLoader {
   unit?: Unit;
   timestamp: ITimestamp;
   suppliers?: ProductSupplier[];
+  code?: string;
+  code_format?: string;
 
   static key: string = 'products';
 

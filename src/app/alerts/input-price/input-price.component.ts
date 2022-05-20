@@ -38,6 +38,7 @@ export class InputPriceComponent implements OnInit {
   }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
@@ -55,6 +56,7 @@ export class InputPriceComponent implements OnInit {
       console.log('update')
       await ModelService.update({ name: ProductSupplier.key, object: this.productSupplier })
     }
+    this.modal.canDismiss = true
     this.modal.dismiss(this.productSupplier)
   }
 

@@ -27,10 +27,12 @@ export class CreateCategoryComponent implements OnInit {
   logScrollEnd() { }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
   async createCategory() {
+    this.modal.canDismiss = true
     this.modal.dismiss(await Category.createCategory(this.category))
   }
 

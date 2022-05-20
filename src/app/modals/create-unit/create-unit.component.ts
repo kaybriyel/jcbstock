@@ -27,10 +27,12 @@ export class CreateUnitComponent implements OnInit {
   logScrollEnd() { }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
   async createUnit() {
+    this.modal.canDismiss = true
     this.modal.dismiss(await Unit.createUnit(this.unit))
   }
 

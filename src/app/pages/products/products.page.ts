@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonContent, IonSearchbar, ModalController, ModalOptions, NavController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { CreateProductComponent } from 'src/app/modals/create-product/create-product.component';
 import { DetailProductComponent } from 'src/app/modals/detail-product/detail-product.component';
 import { UpdateProductsComponent } from 'src/app/modals/update-products/update-products.component';
@@ -18,15 +19,13 @@ export class ProductsPage implements OnInit {
   @ViewChild('searchBar') searchBar: IonSearchbar;
   @ViewChild('content') content: IonContent;
   htmlModal: any;
+  subscriptions: Subscription[]
 
   constructor(
     private navCtrl: NavController,
     private modalCtrl: ModalController,
     private platform: Platform
-  ) {
-    this.platform.keyboardDidHide.subscribe(() => this.addBtn.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.addBtn.nativeElement.classList.add('hide'))
-  }
+  ) {}
 
   searchValue: string
   searchEnable: boolean = false
@@ -36,6 +35,19 @@ export class ProductsPage implements OnInit {
   ngOnInit() {
     this.searchValue = ''
     this.list = []
+    this.subscriptions = []
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keybaord hidden')
+      this.addBtn.nativeElement.classList.remove('hide')
+    }))
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keybaord shown')
+      this.addBtn.nativeElement.classList.add('hide')
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
   }
   
   ionViewDidEnter() {
@@ -58,7 +70,7 @@ export class ProductsPage implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if(this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({...opt, canDismiss: false})
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }

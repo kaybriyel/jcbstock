@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonSearchbar, IonContent, Platform, IonModal, ModalController, ModalOptions } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import Category from 'src/app/models/category';
 import { CreateCategoryComponent } from '../create-category/create-category.component';
 
@@ -16,14 +17,12 @@ export class SelectCategoriesComponent implements OnInit {
 
   modal: IonModal
   htmlModal: HTMLIonModalElement;
+  subscriptions: Subscription[]
 
   constructor(
     private modalCtrl: ModalController,
     private platform: Platform
-    ) {
-    this.platform.keyboardDidHide.subscribe(() => this.addBtn.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.addBtn.nativeElement.classList.add('hide'))
-  }
+  ) {}
 
   searchValue: string
   searchEnable: boolean = false
@@ -32,26 +31,43 @@ export class SelectCategoriesComponent implements OnInit {
   ngOnInit() {
     this.searchValue = ''
     this.list = []
+    this.subscriptions = []
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keyboard hidden')
+      this.addBtn.nativeElement.classList.remove('hide')
+    }))
+
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keyboard shown')
+      this.addBtn.nativeElement.classList.add('hide')
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
   }
 
   ionViewDidEnter() {
     this.loadData()
   }
-  
+
   async loadData() {
     this.list = await Category.load()
     this.list.forEach(i => i.load_products)
   }
   async presentModal(opt: ModalOptions) {
-    if(this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    if (this.htmlModal && this.htmlModal.isConnected) return {}
+    this.htmlModal = await this.modalCtrl.create({ ...opt, canDismiss: false })
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }
 
   async openCreateCategoryModal() {
-    const {data} = await this.presentModal({ component: CreateCategoryComponent })
-    if(data) this.modal.dismiss(data)
+    const { data } = await this.presentModal({ component: CreateCategoryComponent })
+    if (data) {
+      this.modal.canDismiss = true
+      this.modal.dismiss(data)
+    }
   }
 
   scrollStart() {
@@ -69,10 +85,12 @@ export class SelectCategoriesComponent implements OnInit {
   }
 
   select(c: Category) {
+    this.modal.canDismiss = true
     this.modal.dismiss(c)
   }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 

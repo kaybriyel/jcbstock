@@ -1,5 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { IonModal, Platform, ModalController, ModalOptions } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { InputPriceComponent } from 'src/app/alerts/input-price/input-price.component';
 import Category from 'src/app/models/category';
 import Product from 'src/app/models/product';
@@ -24,19 +26,31 @@ export class UpdateProductsComponent implements OnInit {
   categories: Category[]
   modal: IonModal
   htmlModal: any;
+  subscriptions: Subscription[]
 
   constructor(
     private platform: Platform,
     private modalCtrl: ModalController,
-  ) {
-    this.platform.keyboardDidShow.subscribe(() => this.focus())
-    this.platform.keyboardDidHide.subscribe(() => this.blur())
-  }
+    private scanner: BarcodeScanner
+  ) {}
 
   ngOnInit() {
     this.product = new Product
     this.product.unit = Unit.default()
     this.loadData()
+    this.subscriptions = []
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keybaord shown')
+      this.focus()
+    }))
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keybaord hidden')
+      this.blur()
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
   }
 
   async loadData() {
@@ -63,6 +77,7 @@ export class UpdateProductsComponent implements OnInit {
   }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
@@ -72,7 +87,7 @@ export class UpdateProductsComponent implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if (this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({...opt, canDismiss: false})
     this.htmlModal.present()
     const res = await this.htmlModal.onWillDismiss()
     await this.htmlModal.onDidDismiss()
@@ -86,6 +101,7 @@ export class UpdateProductsComponent implements OnInit {
 
   async updateProduct() {
     await ModelService.update({ name: Product.key, object: this.product })
+    this.modal.canDismiss = true
     this.modal.dismiss(this.product)
   }
 
@@ -128,5 +144,24 @@ export class UpdateProductsComponent implements OnInit {
 
   get isModified() {
     return JSON.stringify(this.product) !== JSON.stringify(this.prev)
+  }
+
+  codeIcon(format: string) {
+    const qr = 'qr-code-outline'
+    const barcode = 'barcode-outline'
+    return format === 'QR_CODE' ? qr : barcode
+  }
+
+  async scanCode() {
+    const {
+      text,
+      format,
+      cancelled
+    } = await this.scanner.scan()
+
+    if(!cancelled) {
+      this.product.code = text
+      this.product.code_format = format
+    }
   }
 }

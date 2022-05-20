@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonContent, IonSearchbar, NavController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import CartItem from 'src/app/models/cart-item';
 import OrderNote from 'src/app/models/order-note';
 import Supplier from 'src/app/models/supplier';
@@ -15,11 +16,9 @@ export class OrdersPage implements OnInit {
   @ViewChild('addBtn', { read: ElementRef }) addBtn: ElementRef;
   @ViewChild('searchBar') searchBar: IonSearchbar;
   @ViewChild('content') content: IonContent;
+  subscriptions: Subscription[]
 
-  constructor(private navCtrl: NavController, private platform: Platform) {
-    this.platform.keyboardDidHide.subscribe(() => this.addBtn.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.addBtn.nativeElement.classList.add('hide'))
-  }
+  constructor(private navCtrl: NavController, private platform: Platform) {}
 
   searchValue: string
   searchEnable: boolean = false
@@ -31,8 +30,21 @@ export class OrdersPage implements OnInit {
   ngOnInit() {
     this.searchValue = ''
     this.weeks = ['week_1', 'week_2', 'week_3', 'week_4', 'week_5']
+    this.subscriptions = []
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keybaord hidden')
+      this.addBtn.nativeElement.classList.remove('hide')
+    }))
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keybaord shown')
+      this.addBtn.nativeElement.classList.add('hide')
+    }))
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
+  }
+  
   ionViewDidEnter() {
     this.loadData()
     this.orderNotes = []

@@ -52,6 +52,8 @@ export interface IProduct {
   img?: string
   description?: string
   notification?: ProductNotification
+  code?: string
+  code_format?: string
   timestamp: ITimestamp
 }
 
@@ -64,7 +66,7 @@ export interface IProductLoader {
   get load_suppliers(): Promise<ProductSupplier[]>
   get load_category(): Promise<Category>
   get is_valid(): boolean
-  
+
   setUnit(u: Unit)
   setCategory(c: Category)
 }

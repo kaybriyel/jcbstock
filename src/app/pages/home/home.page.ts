@@ -57,7 +57,7 @@ export class HomePage implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if(this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({...opt, canDismiss: false})
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }

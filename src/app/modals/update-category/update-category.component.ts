@@ -40,6 +40,7 @@ export class UpdateCategoryComponent implements OnInit {
 
   async updateCategory() {
     await ModelService.update({ name: Category.key, object: this.category })
+    this.modal.canDismiss = true
     this.modal.dismiss(this.category)
   }
 
@@ -50,6 +51,7 @@ export class UpdateCategoryComponent implements OnInit {
   logScrollEnd() { }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 

@@ -26,10 +26,12 @@ export class CreateSupplierComponent implements OnInit {
   logScrollEnd() { }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
   async createSupplier() {
+    this.modal.canDismiss = true
     this.modal.dismiss(await Supplier.createSupplier(this.supplier))
   }
 

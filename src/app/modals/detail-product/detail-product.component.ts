@@ -54,7 +54,8 @@ export class DetailProductComponent implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if (this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({...opt, canDismiss: false})
+
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }
@@ -64,6 +65,7 @@ export class DetailProductComponent implements OnInit {
   }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
@@ -107,7 +109,14 @@ export class DetailProductComponent implements OnInit {
   }
 
   viewCart() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
     this.navCtrl.navigateBack('/tabs/cart')
+  }
+
+  codeIcon(format: string) {
+    const qr = 'qr-code-outline'
+    const barcode = 'barcode-outline'
+    return format === 'QR_CODE' ? qr : barcode
   }
 }

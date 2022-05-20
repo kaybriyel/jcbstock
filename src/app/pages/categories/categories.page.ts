@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonContent, IonSearchbar, ModalController, ModalOptions, NavController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { CreateCategoryComponent } from 'src/app/modals/create-category/create-category.component';
 import { UpdateCategoryComponent } from 'src/app/modals/update-category/update-category.component';
 import Category from 'src/app/models/category';
@@ -16,15 +17,13 @@ export class CategoriesPage implements OnInit {
   @ViewChild('searchBar') searchBar: IonSearchbar;
   @ViewChild('content') content: IonContent;
   htmlModal: any;
+  subscriptions: Subscription[]
 
   constructor(
     private navCtrl: NavController,
     private platform: Platform,
     private modalCtrl: ModalController
-  ) {
-    this.platform.keyboardDidHide.subscribe(() => this.addBtn.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.addBtn.nativeElement.classList.add('hide'))
-  }
+  ) {}
 
   searchValue: string
   searchEnable: boolean = false
@@ -33,6 +32,19 @@ export class CategoriesPage implements OnInit {
   ngOnInit() {
     this.searchValue = ''
     this.list = []
+    this.subscriptions = []
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keybaord hidden')
+      this.addBtn.nativeElement.classList.remove('hide')
+    }))
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keybaord shown')
+      this.addBtn.nativeElement.classList.add('hide')
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
   }
 
   ionViewDidEnter() {
@@ -46,7 +58,7 @@ export class CategoriesPage implements OnInit {
 
   async presentModal(opt: ModalOptions) {
     if(this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    this.htmlModal = await this.modalCtrl.create({...opt, canDismiss: false})
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }

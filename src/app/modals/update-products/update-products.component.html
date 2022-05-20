@@ -18,7 +18,7 @@
 <ion-content #content [scrollEvents]="true" (ionScrollStart)="scrollStart()" (ionScroll)="scrolling($event)"
   (ionScrollEnd)="scrollEnd()">
 
-  <div style="height: 35vh;"></div>
+  <div style="height: 33vh;"></div>
   <ion-item lines="none">
     <ion-label class="input-label" position="stacked">Product's Name</ion-label>
     <ion-input class="radius mt" [(ngModel)]="product.name"></ion-input>
@@ -27,6 +27,14 @@
   <ion-item lines="none" class="mt">
     <ion-label class="input-label" position="stacked">Category</ion-label>
     <ion-input class="radius mt" (ionFocus)="selectCategory()"  value="{{product.category?.name}}"></ion-input>
+  </ion-item>
+
+  <ion-item lines="none" class="mt">
+    <ion-label class="input-label mb" position="stacked">QR / Barcode</ion-label>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+      <ion-icon size="large" color="medium" (click)="scanCode()" name="{{codeIcon(product.code_format)}}"></ion-icon>
+      <ion-input class="radius" value="{{product.code}}" style="margin: 0 0 0 16px"></ion-input>
+    </div>
   </ion-item>
 
   <ion-item lines="none" class="mt" style="position: relative;">

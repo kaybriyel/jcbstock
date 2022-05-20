@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonSearchbar, IonContent, NavController, Platform, IonModal, ModalController, ModalOptions } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import Supplier from 'src/app/models/supplier';
 import { ModelService } from 'src/app/services/model.service';
 import { CreateSupplierComponent } from '../create-supplier/create-supplier.component';
@@ -17,14 +18,12 @@ export class SelectSuppliersComponent implements OnInit {
 
   modal: IonModal
   htmlModal: any;
+  subscriptions: Subscription[]
 
   constructor(
     private modalCtrl: ModalController,
     private platform: Platform
-  ) {
-    this.platform.keyboardDidHide.subscribe(() => this.addBtn.nativeElement.classList.remove('hide'))
-    this.platform.keyboardDidShow.subscribe(() => this.addBtn.nativeElement.classList.add('hide'))
-  }
+  ) {}
 
   searchValue: string
   searchEnable: boolean = false
@@ -33,6 +32,19 @@ export class SelectSuppliersComponent implements OnInit {
   ngOnInit() {
     this.searchValue = ''
     this.list = []
+    this.subscriptions = []
+    this.subscriptions.push(this.platform.keyboardDidHide.subscribe(() => {
+      console.log('keyboard hidden')
+      this.addBtn.nativeElement.classList.remove('hide')
+    }))
+    this.subscriptions.push(this.platform.keyboardDidShow.subscribe(() => {
+      console.log('keyboard shown')
+      this.addBtn.nativeElement.classList.add('hide')
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => s.unsubscribe())
   }
 
   ionViewDidEnter() {
@@ -45,15 +57,18 @@ export class SelectSuppliersComponent implements OnInit {
   }
 
   async presentModal(opt: ModalOptions) {
-    if(this.htmlModal && this.htmlModal.isConnected) return {}
-    this.htmlModal = await this.modalCtrl.create(opt)
+    if (this.htmlModal && this.htmlModal.isConnected) return {}
+    this.htmlModal = await this.modalCtrl.create({ ...opt, canDismiss: false })
     this.htmlModal.present()
     return this.htmlModal.onWillDismiss()
   }
 
   async openCreateSupplierModal() {
-    const {data} = await this.presentModal({ component: CreateSupplierComponent })
-    if (data) this.modal.dismiss(data)
+    const { data } = await this.presentModal({ component: CreateSupplierComponent })
+    if (data) {
+      this.modal.canDismiss = true
+      this.modal.dismiss(data)
+    }
   }
 
   scrollStart() {
@@ -71,10 +86,12 @@ export class SelectSuppliersComponent implements OnInit {
   }
 
   back() {
+    this.modal.canDismiss = true
     this.modal.dismiss()
   }
 
   select(s: Supplier) {
+    this.modal.canDismiss = true
     this.modal.dismiss(s)
   }
 
