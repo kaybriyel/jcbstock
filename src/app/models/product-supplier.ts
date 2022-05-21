@@ -71,4 +71,9 @@ export default class ProductSupplier implements IProductSupplier, IProductSuppli
   setProduct(p: Product) {
     throw new Error("Method not implemented.");
   }
+
+  static async create(ps: IProductSupplier) {
+    const { result } = await ModelService.create({ name: ProductSupplier.key, object: ps })
+    if(result) return new ProductSupplier(result.data)
+  }
 }

@@ -21,6 +21,7 @@ export interface ICategory {
   id: number
   name: string
   img?: string
+  type?: string
   timestamp: ITimestamp
 }
 

@@ -25,8 +25,17 @@ export default class Unit implements IUnit, IUnitLoader {
     return this.name && this.abbr && !isNaN(this.id)
   }
 
-  static async createUnit(u: IUnit): Promise<Unit> {
-    return await ModelService.create({ name: Unit.key, object: u })
+  async save(): Promise<Unit> {
+    let data
+    if(isNaN(this.id)) {
+      const { result} = await ModelService.create({ name: Unit.key, object: this })
+      if(result) data = result.data
+    }
+    else {
+      const { result} = await ModelService.update({ name: Unit.key, object: this })
+      if(result) data = result.data
+    }
+    return data ? new Unit(data) : null
   }
 
   static default() {

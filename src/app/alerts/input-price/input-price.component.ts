@@ -51,7 +51,7 @@ export class InputPriceComponent implements OnInit {
     await this.productSupplier.load_supplier
     if(this.productSupplier.id === undefined) {
       console.log('create')
-      this.productSupplier = await ModelService.create({ name: ProductSupplier.key, object: this.productSupplier })
+      this.productSupplier = await ProductSupplier.create(this.productSupplier)
     } else {
       console.log('update')
       await ModelService.update({ name: ProductSupplier.key, object: this.productSupplier })

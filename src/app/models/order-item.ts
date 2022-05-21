@@ -6,10 +6,16 @@ import ProductSupplier from "./product-supplier";
 
 export default class OrderItem implements IOrderItem, IOrderItemLoader {
   async save() {
-    if(this.id === undefined) {
-      const { id } = await ModelService.create({ name: OrderItem.key, object: this })
-      this.id = id
-    } else await ModelService.update({ name: OrderItem.key, object: this })
+    let data
+    if(isNaN(this.id)) {
+      const { result } = await ModelService.create({ name: OrderItem.key, object: this })
+      if(result) data = result.data
+    } else {
+      const { result } = await ModelService.update({ name: OrderItem.key, object: this })
+      if(result) data = result.data
+    }
+
+    return data ? new OrderItem(data) : null
   }
   
   static fromCartItem(ci: CartItem): any {

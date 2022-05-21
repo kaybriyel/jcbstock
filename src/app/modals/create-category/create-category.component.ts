@@ -33,7 +33,7 @@ export class CreateCategoryComponent implements OnInit {
 
   async createCategory() {
     this.modal.canDismiss = true
-    this.modal.dismiss(await Category.createCategory(this.category))
+    this.modal.dismiss(await this.category.save())
   }
 
   get isOk() {

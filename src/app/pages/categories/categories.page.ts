@@ -109,8 +109,8 @@ export class CategoriesPage implements OnInit {
   }
 
   async deleteCategory(id: number) {
-    const deleted = await ModelService.delete({ name: Category.key, id })
-    if (deleted) this.list.splice(this.list.findIndex(c => c.id === id), 1)
+    const { result } = await ModelService.delete({ name: Category.key, id })
+    if (result) this.list.splice(this.list.findIndex(c => c.id === id), 1)
   }
 
 }

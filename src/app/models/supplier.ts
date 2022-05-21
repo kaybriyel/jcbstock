@@ -58,8 +58,18 @@ export default class Supplier implements ISupplier, ISupplierLoader {
     }
   }
 
-  static async createSupplier(sup: ISupplier): Promise<Supplier> {
-    return new Supplier(await ModelService.create({ name: Supplier.key, object: sup }))
+  async save(): Promise<Supplier> {
+    let data
+    if(isNaN(this.id)) {
+      const { result } = await ModelService.create({ name: Supplier.key, object: this })
+      if(result) data = result.data
+    }
+    else {
+      const { result } = await ModelService.update({ name: Supplier.key, object: this })
+      if(result) data = result.data
+    }
+
+    return data ? new Supplier(data) : null
   }
 
   static async load(): Promise<Supplier[]> {

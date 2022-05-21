@@ -21,8 +21,16 @@ export default class Currency implements ICurrency, ICurrencyLoader {
     return result ? result.map(c => new Currency(c)) : []
   }
 
-  static async createCurrency(cat: ICurrency): Promise<Currency> {
-    return await ModelService.create({ name: Currency.key, object: cat })
+  async save(): Promise<Currency> {
+    let data
+    if(isNaN(this.id)) {
+      const { result } = await ModelService.create({ name: Currency.key, object: this })
+      if(result) data = result.data
+    } else {
+      const { result } = await ModelService.update({ name: Currency.key, object: this })
+      if(result) data = result.data
+    }
+    if(data) return new Currency(data)
   }
 
 
@@ -31,7 +39,7 @@ export default class Currency implements ICurrency, ICurrencyLoader {
 const s = localStorage.getItem(Currency.key)
 if (!s) {
   (async () => {
-    const currencies: Currency[] = [
+    const currencies: ICurrency[] = [
       { id: 0, code: 'KHR', symbol: '៛', name: 'Riel' },
       { id: 1, code: 'USD', symbol: '$', name: 'US Dollar' }
     ]

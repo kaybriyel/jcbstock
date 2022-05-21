@@ -33,7 +33,7 @@ export class CreateUnitComponent implements OnInit {
 
   async createUnit() {
     this.modal.canDismiss = true
-    this.modal.dismiss(await Unit.createUnit(this.unit))
+    this.modal.dismiss(await this.unit.save())
   }
 
   get isOk() {

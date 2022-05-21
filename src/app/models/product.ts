@@ -83,8 +83,17 @@ export default class Product implements IProduct, IProductLoader {
     }
   }
 
-  static async createProduct(pro: IProduct): Promise<Product> {
-    return await ModelService.create({ name: Product.key, object: pro })
+  async save(): Promise<Product> {
+    let data
+    if(isNaN(this.id)) {
+      const { result } = await ModelService.create({ name: Product.key, object: this })
+      if(result) data = result.data
+    }
+    else {
+      const { result } = await ModelService.update({ name: Product.key, object: this })
+      if(result) data = result.data
+    }
+    return data ? new Product(data) : null
   }
 
   static async load(): Promise<Product[]> {

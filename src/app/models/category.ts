@@ -8,6 +8,7 @@ export default class Category implements ICategory, ICategoryLoader {
   item_count: number;
   img?: string;
   products?: Product[];
+  type?: string = 'stock_category'
 
   static key: string = 'categories'
 
@@ -56,13 +57,22 @@ export default class Category implements ICategory, ICategoryLoader {
     return cat
   }
 
-  static async createCategory(cat: ICategory): Promise<Category> {
-    return await ModelService.create({ name: Category.key, object: cat })
+  async save() {
+    let data
+    if(isNaN(this.id)) {
+      const { result } = await ModelService.create({ name: Category.key, object: this })
+      if(result) data = result.data
+    } else {
+      const { result } = await ModelService.update({ name: Category.key, object: this })
+      if(result) data = result.data
+    }
+    return data ? new Category(data) : null
   }
 
   static async load(): Promise<Category[]> {
-    const { result } = await ModelService.getLocalData(Category.key)
-    return result ? result.map(c => new Category(c)) : []
+    const { result } = await ModelService.getAPIData(Category.key)
+    if(result) ModelService.saveLocalData(Category.key, result.data)
+    return result ? result.data.map(c => new Category(c)) : []
   }
 
 }

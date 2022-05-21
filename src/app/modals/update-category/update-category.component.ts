@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IonModal, NavController } from '@ionic/angular';
+import { IonModal } from '@ionic/angular';
 import Category from 'src/app/models/category';
 import { ModelService } from 'src/app/services/model.service';
 
@@ -15,9 +15,7 @@ export class UpdateCategoryComponent implements OnInit {
   category: Category
   modal: IonModal
 
-  constructor(
-    private navCtrl: NavController,
-  ) {
+  constructor() {
   }
 
   ngOnInit() {
@@ -39,7 +37,7 @@ export class UpdateCategoryComponent implements OnInit {
   }
 
   async updateCategory() {
-    await ModelService.update({ name: Category.key, object: this.category })
+    await this.category.save()
     this.modal.canDismiss = true
     this.modal.dismiss(this.category)
   }

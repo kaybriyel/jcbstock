@@ -36,30 +36,20 @@ export default class OrderNote implements IOrderNote, IOrderNoteLoader {
     })
   }
 
-  static async createOrderNote(odn: IOrderNote): Promise<OrderNote> {
-    const o = await ModelService.create({ name: OrderNote.key, object: odn })
-    return new OrderNote(o)
-  }
-
   static async load(): Promise<OrderNote[]> {
     const { result } = await ModelService.getLocalData(OrderNote.key)
     return result ? result.map(c => new OrderNote(c)) : []
   }
 
   async save() {
+    let data
     if (isNaN(this.id)) {
-      const { id, timestamp } = await OrderNote.createOrderNote(this)
-      this.id = id
-      this.timestamp = timestamp
+      const { result } = await ModelService.create({ name: OrderNote.key, object: this })
+      if(result) data = result.data
     } else {
-      await ModelService.update({ name: OrderNote.key, object: this })
+      const {result} = await ModelService.update({ name: OrderNote.key, object: this })
+      if(result) data = result.data
     }
-
-    if (this.items) {
-      for (const i of this.items) {
-        i.order_note_id = this.id
-        await i.save()
-      }
-    }
+    return data ? new OrderNote(data) : null
   }
 }

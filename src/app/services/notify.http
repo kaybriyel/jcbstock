@@ -4,10 +4,11 @@ Accept: application/json
 Authorization: Basic NTU0NDY1ZTUtMmRhMC00YThlLTk3ZWYtYmVhY2JkZmY5ZDdi
 
 {
-  "included_segments": ["Subscribed Users"],
+  //"included_segments": ["Subscribed Users"],
+  "include_player_ids": ["42d2a7e7-2c90-40ad-8760-481130ae0850"],
   "app_id": "648ebde3-b0c0-41d0-8640-9b7f5ef2eecb",
-  "headings": { "en": "Ionic One Signal" },
-  "contents": { "en": "Testing One Signal on ionic app" },
+  "headings": { "en": "Need to order more tea" },
+  "contents": { "en": "Tea is running out of stock!" },
   "data": { "action": "test action" }
   //"url": "https://jcbakery.herokuapp.com/order-note"
   //chrome_web_image

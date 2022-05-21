@@ -95,7 +95,7 @@ export class CreateProductComponent implements OnInit {
   }
 
   async createProduct() {
-    this.product = await Product.createProduct(this.product)
+    this.product = await this.product.save()
 
     if (this.product.is_valid) {
       this.modal.canDismiss = true

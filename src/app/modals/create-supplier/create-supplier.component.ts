@@ -32,7 +32,7 @@ export class CreateSupplierComponent implements OnInit {
 
   async createSupplier() {
     this.modal.canDismiss = true
-    this.modal.dismiss(await Supplier.createSupplier(this.supplier))
+    this.modal.dismiss(await this.supplier.save())
   }
 
   get isOk() {
